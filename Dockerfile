@@ -31,7 +31,7 @@ COPY --from=build /app/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=docker
 
 # Expose the application port
-EXPOSE 8080
+EXPOSE 8081
 
 # Set JVM options for better container performance
 ENV JAVA_OPTS="-Xmx512m -Xms256m"

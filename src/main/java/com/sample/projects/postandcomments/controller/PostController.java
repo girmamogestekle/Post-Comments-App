@@ -1,0 +1,99 @@
+package com.sample.projects.postandcomments.controller;
+
+import com.sample.projects.postandcomments.dto.CommonResponse;
+import com.sample.projects.postandcomments.dto.request.PostRequest;
+import com.sample.projects.postandcomments.dto.response.PostResponse;
+import com.sample.projects.postandcomments.service.PostService;
+import com.sample.projects.postandcomments.util.ResponseUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/posts")
+public class PostController {
+
+    private final PostService postService;
+
+    @Autowired
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
+
+    @PostMapping
+    public ResponseEntity<CommonResponse<PostResponse>> createPost(
+            @Valid @RequestBody PostRequest request,
+            HttpServletRequest httpRequest) {
+        PostResponse createdPost = postService.save(request);
+        CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
+                HttpStatus.CREATED, "Post created successfully", createdPost, httpRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResponse<PostResponse>> getPostById(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+        return postService.findById(id)
+                .map(post -> {
+                    CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
+                            HttpStatus.OK, "Post retrieved successfully", post, httpRequest);
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> {
+                    CommonResponse<PostResponse> response = ResponseUtil.buildErrorResponse(
+                            HttpStatus.NOT_FOUND, "Post not found",
+                            List.of("Post with id " + id + " not found"), httpRequest);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                });
+    }
+
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<PostResponse>>> getAllPosts(HttpServletRequest httpRequest) {
+        List<PostResponse> posts = postService.findAll();
+        CommonResponse<List<PostResponse>> response = ResponseUtil.buildSuccessResponse(
+                HttpStatus.OK, "Posts retrieved successfully", posts, httpRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommonResponse<PostResponse>> updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody PostRequest request,
+            HttpServletRequest httpRequest) {
+        if (!postService.existsById(id)) {
+            CommonResponse<PostResponse> response = ResponseUtil.buildErrorResponse(
+                    HttpStatus.NOT_FOUND, "Post not found",
+                    List.of("Post with id " + id + " not found"), httpRequest);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        
+        PostResponse updatedPost = postService.update(id, request);
+        CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
+                HttpStatus.OK, "Post updated successfully", updatedPost, httpRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<Object>> deletePost(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest) {
+        if (!postService.existsById(id)) {
+            CommonResponse<Object> response = ResponseUtil.buildErrorResponse(
+                    HttpStatus.NOT_FOUND, "Post not found",
+                    List.of("Post with id " + id + " not found"), httpRequest);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        
+        postService.deleteById(id);
+        CommonResponse<Object> response = ResponseUtil.buildSuccessResponse(
+                HttpStatus.NO_CONTENT, "Post deleted successfully", null, httpRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
+}
+

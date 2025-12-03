@@ -1,7 +1,5 @@
 # 📌 Post & Comments System
 
-# 📌 Post & Comments System
-
 [![Java](https://img.shields.io/badge/Java-17-blue)]()
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)]()

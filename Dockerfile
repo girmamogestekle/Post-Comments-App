@@ -12,8 +12,8 @@ RUN mvn dependency:go-offline -B
 # Copy source code
 COPY src ./src
 
-# Build the application
-RUN mvn clean package -DskipTests
+# Build the application without tests
+RUN mvn -B clean package -DskipTests
 
 # Stage 2: Runtime stage
 FROM eclipse-temurin:17-jre
@@ -26,9 +26,6 @@ USER spring
 
 # Copy the JAR file from build stage
 COPY --from=build /app/target/*.jar app.jar
-
-# 👉 Activate docker profile INSIDE the running container
-ENV SPRING_PROFILES_ACTIVE=docker
 
 # Expose the application port
 EXPOSE 8081

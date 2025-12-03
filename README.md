@@ -3,7 +3,7 @@
 [![Java](https://img.shields.io/badge/Java-17-blue)]()
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)]()
-[![Build Status](https://github.com/girmamogestekle/Post-Comments-App/actions/workflows/ci.yml/badge.svg)](https://github.com/girmamogestekle/Post-Comments-App/actions)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/ci.yml?branch=master&label=Build&style=for-the-badge)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 [![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/Coverage-80%25-success)]()
 [![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen)]()

@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17-blue?style=for-the-badge)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?style=for-the-badge)
-![Docker](https://img.shields.io/badge/Docker-Ready-informational?style=for-the-badge)(https://hub.docker.com/r/gmtekle/post-comments-app)
+![Docker](https://img.shields.io/badge/Docker-Ready-informational?style=for-the-badge)](https://hub.docker.com/r/gmtekle/post-comments-app)
 [![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/build.yml?branch=main&label=Build&style=for-the-badge)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?style=for-the-badge)
 ![Coverage](https://img.shields.io/badge/Coverage-80%25-success?style=for-the-badge)

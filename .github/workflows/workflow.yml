@@ -11,7 +11,7 @@ on:
 env:
   APP_NAME: post-comments-app
   DOCKER_HUB_REPOSITORY: ${{ secrets.DOCKERHUB_USERNAME }}/post-comments-app
-  ECR_REGION: us-east-1                    # <-- change to your AWS region
+  ECR_REGION: us-east-2                    # <-- change to your AWS region
   ECR_REPOSITORY: post-comments-app        # <-- change to your ECR repo name
 
 jobs:

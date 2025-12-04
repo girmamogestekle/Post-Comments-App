@@ -7,6 +7,7 @@
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?style=for-the-badge)
 ![Coverage](https://img.shields.io/badge/Coverage-80%25-success?style=for-the-badge)
 ![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen?style=for-the-badge)
+[![API Docs](https://img.shields.io/badge/API%20Docs-Swagger%20UI-blue?style=for-the-badge)](https://girmamogestekle.github.io/Post-Comments-App/)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
 ---

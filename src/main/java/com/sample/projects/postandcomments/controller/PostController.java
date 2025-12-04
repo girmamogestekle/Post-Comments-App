@@ -3,6 +3,7 @@ package com.sample.projects.postandcomments.controller;
 import com.sample.projects.postandcomments.dto.CommonResponse;
 import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
+import com.sample.projects.postandcomments.service.AiService;
 import com.sample.projects.postandcomments.service.PostService;
 import com.sample.projects.postandcomments.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,30 +20,51 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final AiService aiService;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService,
+                          AiService aiService) {
         this.postService = postService;
+        this.aiService = aiService;
     }
 
     @PostMapping
     public ResponseEntity<CommonResponse<PostResponse>> createPost(
             @Valid @RequestBody PostRequest request,
+            @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
         PostResponse createdPost = postService.save(request);
-        CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
-                HttpStatus.CREATED, "Post created successfully", createdPost, httpRequest);
+
+        CommonResponse<PostResponse> response;
+
+        if(includeAi){
+            response = ResponseUtil.buildSuccessResponseWithAiResponse(
+                    HttpStatus.CREATED, "Post created successfully", createdPost, aiService.explainPost(createdPost), httpRequest);
+        }
+        else{
+            response = ResponseUtil.buildSuccessResponse(
+                    HttpStatus.CREATED, "Post created successfully", createdPost, httpRequest);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponse<PostResponse>> getPostById(
             @PathVariable Long id,
+            @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
         return postService.findById(id)
                 .map(post -> {
-                    CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
-                            HttpStatus.OK, "Post retrieved successfully", post, httpRequest);
+                    CommonResponse<PostResponse> response;
+                    if(includeAi){
+                        response = ResponseUtil.buildSuccessResponseWithAiResponse(
+                                HttpStatus.OK, "Post retrieved successfully", post, aiService.explainPost(post), httpRequest);
+                    } else{
+                        response = ResponseUtil.buildSuccessResponse(
+                                HttpStatus.OK, "Post retrieved successfully", post, httpRequest);
+                    }
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(() -> {
@@ -64,18 +86,29 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<PostResponse>> updatePost(
             @PathVariable Long id,
+            @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             @Valid @RequestBody PostRequest request,
             HttpServletRequest httpRequest) {
+
+        CommonResponse<PostResponse> response;
+
         if (!postService.existsById(id)) {
-            CommonResponse<PostResponse> response = ResponseUtil.buildErrorResponse(
+            response = ResponseUtil.buildErrorResponse(
                     HttpStatus.NOT_FOUND, "Post not found",
                     List.of("Post with id " + id + " not found"), httpRequest);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         
         PostResponse updatedPost = postService.update(id, request);
-        CommonResponse<PostResponse> response = ResponseUtil.buildSuccessResponse(
-                HttpStatus.OK, "Post updated successfully", updatedPost, httpRequest);
+
+        if(includeAi){
+            response = ResponseUtil.buildSuccessResponseWithAiResponse(
+                    HttpStatus.OK, "Post updated successfully", updatedPost, aiService.explainPost(updatedPost), httpRequest);
+        } else{
+            response = ResponseUtil.buildSuccessResponse(
+                    HttpStatus.OK, "Post updated successfully", updatedPost, httpRequest);
+        }
+
         return ResponseEntity.ok(response);
     }
 

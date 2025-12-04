@@ -1,5 +1,6 @@
 package com.sample.projects.postandcomments.dto;
 
+import com.sample.projects.postandcomments.dto.response.AiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,9 @@ public class CommonResponse<T> {
     private String message;
     
     private T payload;
+
+    /** 🔹 NEW: AI-specific payload */
+    private AiResponse aiPayload;
     
     private boolean success;
     

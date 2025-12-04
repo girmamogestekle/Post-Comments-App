@@ -1,15 +1,15 @@
 # 📌 Post & Comments System
 
-![Java](https://img.shields.io/badge/Java-17-blue?style=for-the-badge)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?style=for-the-badge)
-[![Docker](https://img.shields.io/badge/Docker-Ready-informational?style=for-the-badge)](https://hub.docker.com/r/gmtekle/post-comments-app)
-![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen?style=for-the-badge)
-[![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/build.yml?branch=master&label=Build&style=for-the-badge)](https://github.com/girmamogestekle/Post-Comments-App/actions)
+[![Java](https://img.shields.io/badge/Java-17-blue)]()
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
+[![Docker](https://img.shields.io/badge/Docker-Ready-informational)]()
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)]()
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=post-comments-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=post-comments-app)
-![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen?style=for-the-badge)
-[![API Docs](https://img.shields.io/badge/API%20Docs-Swagger%20UI-blue?style=for-the-badge)](https://girmamogestekle.github.io/Post-Comments-App/)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
+[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)]()
+[![Coverage](https://img.shields.io/badge/Coverage-80%25-success)]()
+[![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
 ---
 

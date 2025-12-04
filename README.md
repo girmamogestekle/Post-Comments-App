@@ -4,7 +4,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/post-comments-app)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)]()
-[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)]()
+[![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/build.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=post-comments-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=post-comments-app)
 [![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen)]()

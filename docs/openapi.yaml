@@ -1,0 +1,932 @@
+openapi: 3.0.3
+info:
+  title: Post and Comments API
+  description: |
+    RESTful API for managing posts, comments, post details, and tags.
+    
+    This API allows you to:
+    - Create, read, update, and delete posts
+    - Add comments to posts
+    - Manage post details and tags
+    - Associate tags with posts
+    
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8081
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Posts
+    description: Operations related to posts
+  - name: Comments
+    description: Operations related to post comments
+  - name: Post Details
+    description: Operations related to post details
+  - name: Tags
+    description: Operations related to tags
+
+paths:
+  # Posts endpoints
+  /api/posts:
+    get:
+      tags:
+        - Posts
+      summary: Get all posts
+      description: Retrieves a list of all posts
+      operationId: getAllPosts
+      responses:
+        '200':
+          description: Successfully retrieved posts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostListResponse'
+              example:
+                status: 200
+                message: "Posts retrieved successfully"
+                success: true
+                payload:
+                  - id: 1
+                    title: "Introduction to Spring Boot"
+                    createdAt: "2025-12-02T10:00:00"
+                    updatedAt: "2025-12-02T10:00:00"
+                    comments: []
+                    tags: []
+                    postDetails: null
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Posts
+      summary: Create a new post
+      description: Creates a new post with the provided information
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+            example:
+              title: "Introduction to Spring Boot"
+              tagIds: [1, 2]
+      responses:
+        '201':
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponseWrapper'
+              example:
+                status: 201
+                message: "Post created successfully"
+                success: true
+                payload:
+                  id: 1
+                  title: "Introduction to Spring Boot"
+                  createdAt: "2025-12-02T10:00:00"
+                  updatedAt: "2025-12-02T10:00:00"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/posts/{id}:
+    get:
+      tags:
+        - Posts
+      summary: Get post by ID
+      description: Retrieves a specific post by its ID
+      operationId: getPostById
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '200':
+          description: Successfully retrieved post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponseWrapper'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - Posts
+      summary: Update a post
+      description: Updates an existing post with the provided information
+      operationId: updatePost
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+            example:
+              title: "Updated Post Title"
+              tagIds: [1, 3]
+      responses:
+        '200':
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponseWrapper'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Posts
+      summary: Delete a post
+      description: Deletes a post by its ID
+      operationId: deletePost
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # Comments endpoints
+  /api/comments:
+    get:
+      tags:
+        - Comments
+      summary: Get all comments
+      description: Retrieves a list of all comments
+      operationId: getAllComments
+      responses:
+        '200':
+          description: Successfully retrieved comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostComment'
+              example:
+                - id: 1
+                  review: "Great post!"
+                  post:
+                    id: 1
+                  createdAt: "2025-12-02T10:30:00"
+                  updatedAt: "2025-12-02T10:30:00"
+
+    post:
+      tags:
+        - Comments
+      summary: Create a new comment
+      description: Creates a new comment for a post
+      operationId: createComment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostComment'
+            example:
+              review: "This is a great post!"
+              post:
+                id: 1
+      responses:
+        '201':
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostComment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/comments/{id}:
+    get:
+      tags:
+        - Comments
+      summary: Get comment by ID
+      description: Retrieves a specific comment by its ID
+      operationId: getCommentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostComment'
+        '404':
+          description: Comment not found
+
+    put:
+      tags:
+        - Comments
+      summary: Update a comment
+      description: Updates an existing comment
+      operationId: updateComment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostComment'
+      responses:
+        '200':
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostComment'
+        '404':
+          description: Comment not found
+
+    delete:
+      tags:
+        - Comments
+      summary: Delete a comment
+      description: Deletes a comment by its ID
+      operationId: deleteComment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Comment deleted successfully
+        '404':
+          description: Comment not found
+
+  /api/comments/post/{postId}:
+    get:
+      tags:
+        - Comments
+      summary: Get comments by post ID
+      description: Retrieves all comments for a specific post
+      operationId: getCommentsByPostId
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: Post ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostComment'
+
+  # Post Details endpoints
+  /api/post-details:
+    get:
+      tags:
+        - Post Details
+      summary: Get all post details
+      description: Retrieves a list of all post details
+      operationId: getAllPostDetails
+      responses:
+        '200':
+          description: Successfully retrieved post details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostDetails'
+              example:
+                - id: 1
+                  description: "Detailed description of the post"
+                  post:
+                    id: 1
+                  createdAt: "2025-12-02T10:00:00"
+                  updatedAt: "2025-12-02T10:00:00"
+
+    post:
+      tags:
+        - Post Details
+      summary: Create new post details
+      description: Creates details for a post
+      operationId: createPostDetails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDetails'
+            example:
+              description: "This is a detailed description of the post content"
+              post:
+                id: 1
+      responses:
+        '201':
+          description: Post details created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetails'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/post-details/{id}:
+    get:
+      tags:
+        - Post Details
+      summary: Get post details by ID
+      description: Retrieves post details by its ID
+      operationId: getPostDetailsById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Post details ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved post details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetails'
+        '404':
+          description: Post details not found
+
+    put:
+      tags:
+        - Post Details
+      summary: Update post details
+      description: Updates existing post details
+      operationId: updatePostDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Post details ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDetails'
+      responses:
+        '200':
+          description: Post details updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetails'
+        '404':
+          description: Post details not found
+
+    delete:
+      tags:
+        - Post Details
+      summary: Delete post details
+      description: Deletes post details by its ID
+      operationId: deletePostDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Post details ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Post details deleted successfully
+        '404':
+          description: Post details not found
+
+  /api/post-details/post/{postId}:
+    get:
+      tags:
+        - Post Details
+      summary: Get post details by post ID
+      description: Retrieves post details for a specific post
+      operationId: getPostDetailsByPostId
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: Post ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved post details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetails'
+        '404':
+          description: Post details not found
+
+  # Tags endpoints
+  /api/tags:
+    get:
+      tags:
+        - Tags
+      summary: Get all tags
+      description: Retrieves a list of all tags
+      operationId: getAllTags
+      responses:
+        '200':
+          description: Successfully retrieved tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+              example:
+                - id: 1
+                  name: "Spring Boot"
+                - id: 2
+                  name: "Java"
+
+    post:
+      tags:
+        - Tags
+      summary: Create a new tag
+      description: Creates a new tag
+      operationId: createTag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+            example:
+              name: "Spring Boot"
+      responses:
+        '201':
+          description: Tag created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Tag with this name already exists
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/tags/{id}:
+    get:
+      tags:
+        - Tags
+      summary: Get tag by ID
+      description: Retrieves a specific tag by its ID
+      operationId: getTagById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Tag ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not found
+
+    put:
+      tags:
+        - Tags
+      summary: Update a tag
+      description: Updates an existing tag
+      operationId: updateTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Tag ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: Tag updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not found
+        '409':
+          description: Tag with this name already exists
+
+    delete:
+      tags:
+        - Tags
+      summary: Delete a tag
+      description: Deletes a tag by its ID
+      operationId: deleteTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Tag ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Tag deleted successfully
+        '404':
+          description: Tag not found
+
+  /api/tags/name/{name}:
+    get:
+      tags:
+        - Tags
+      summary: Get tag by name
+      description: Retrieves a tag by its name
+      operationId: getTagByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Tag name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not found
+
+components:
+  parameters:
+    PostId:
+      name: id
+      in: path
+      required: true
+      description: Post ID
+      schema:
+        type: integer
+        format: int64
+        example: 1
+
+  schemas:
+    PostRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: The title of the post
+          example: "Introduction to Spring Boot"
+        tagIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: Array of tag IDs to associate with the post
+          example: [1, 2]
+
+    PostResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the post
+          example: 1
+        title:
+          type: string
+          description: The title of the post
+          example: "Introduction to Spring Boot"
+        postDetails:
+          $ref: '#/components/schemas/PostDetailsResponse'
+          nullable: true
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostCommentResponse'
+          description: List of comments for this post
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagResponse'
+          description: List of tags associated with this post
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the post was created
+          example: "2025-12-02T10:00:00"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the post was last updated
+          example: "2025-12-02T10:00:00"
+
+    PostListResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          example: 200
+        message:
+          type: string
+          example: "Posts retrieved successfully"
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostResponse'
+
+    PostResponseWrapper:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          example: 201
+        message:
+          type: string
+          example: "Post created successfully"
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/PostResponse'
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          example: "/api/posts"
+
+    PostComment:
+      type: object
+      required:
+        - review
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the comment
+          example: 1
+        review:
+          type: string
+          description: The comment/review text
+          example: "Great post!"
+        post:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+          description: The post this comment belongs to
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the comment was created
+          example: "2025-12-02T10:30:00"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the comment was last updated
+          example: "2025-12-02T10:30:00"
+
+    PostCommentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        review:
+          type: string
+          example: "Great post!"
+        postId:
+          type: integer
+          format: int64
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-12-02T10:30:00"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-12-02T10:30:00"
+
+    PostDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the post details
+          example: 1
+        description:
+          type: string
+          description: Detailed description of the post
+          maxLength: 5000
+          example: "This is a detailed description of the post content"
+        post:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+          description: The post these details belong to
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the details were created
+          example: "2025-12-02T10:00:00"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the details were last updated
+          example: "2025-12-02T10:00:00"
+
+    PostDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        postId:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          example: "This is a detailed description"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-12-02T10:00:00"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-12-02T10:00:00"
+
+    Tag:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the tag
+          example: 1
+        name:
+          type: string
+          description: The name of the tag (must be unique)
+          example: "Spring Boot"
+
+    TagResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Spring Boot"
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          example: 400
+        message:
+          type: string
+          example: "Bad Request"
+        success:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            type: string
+          example: ["Title is required"]
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+          example: "/api/posts"
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: 400
+            message: "Bad Request"
+            success: false
+            errors: ["Title is required"]
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: 404
+            message: "Post not found"
+            success: false
+            errors: ["Post with id 1 not found"]
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: 500
+            message: "Internal Server Error"
+            success: false
+            errors: ["An unexpected error occurred"]
+

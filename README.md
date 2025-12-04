@@ -1,7 +1,7 @@
 # 📌 Post & Comments System
 
-[![Java](https://img.shields.io/badge/Java-17-blue)]()
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
+[![Java](https://img.shields.io/badge/Java-17-blue)](https://www.oracle.com/java/technologies/javase/17-doc-downloads.html)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green)](https://spring.io/projects/spring-boot)
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/post-comments-app)
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)]()
 [![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/workflow.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)

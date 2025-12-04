@@ -3,7 +3,7 @@
 [![Java](https://img.shields.io/badge/Java-17-blue)]()
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational?style=for-the-badge)](https://hub.docker.com/r/gmtekle/post-comments-app)
-[![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen?style=for-the-badge)]
+[![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen?style=for-the-badge)]()
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)]()
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=post-comments-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=post-comments-app)

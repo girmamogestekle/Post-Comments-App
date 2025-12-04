@@ -92,6 +92,21 @@ http://localhost:8080/swagger-ui.html
 ```
 ---
 
+### 🤖 AI-Powered Enhancements (Spring AI)
+```
+## 🤖 AI-Powered Enhancements (Spring AI)
+
+This backend integrates Spring AI and OpenAI to provide intelligent features:
+
+| Feature             | Description                          | Endpoint                           |
+|---------------------|--------------------------------------|------------------------------------|
+| Post AI Explanation | Returns simplified summary using LLM | GET /api/posts/{id}?includeAi=true |
+
+> Powered by Spring AI + OpenAI  
+> Easily extendable to enrich Comments, Tags, and Post Details
+```
+---
+
 ### ☁️ Cloud Roadmap Architecture (Future AWS Expansion)
 ```
 flowchart LR

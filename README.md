@@ -97,28 +97,12 @@ http://localhost:8080/swagger-ui.html
 
 This backend integrates Spring AI and OpenAI to provide intelligent features:
 
-| Feature | Description | Endpoint |
-|--------|-------------|----------|
+| Feature             | Description                          | Endpoint                           |
+|---------------------|--------------------------------------|------------------------------------|
 | Post AI Explanation | Returns simplified summary using LLM | GET /api/posts/{id}?includeAi=true |
-| AI Service Endpoint | Standalone AI explanation for posts | GET /api/ai/posts/{id}/explain |
 
 > Powered by Spring AI + OpenAI  
 > Easily extendable to enrich Comments, Tags, and Post Details
-
-Example JSON:
-
-```json
-{
-  "status": 200,
-  "message": "Post retrieved successfully",
-  "payload": { "...post data..." },
-  "aiPayload": {
-    "resourceType": "POST",
-    "resourceId": 1,
-    "title": "Intro to Docker",
-    "explanation": "This post explains Docker in simple, practical language..."
-  }
-}
 ```
 ---
 

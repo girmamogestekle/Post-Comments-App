@@ -3,8 +3,10 @@ package com.sample.projects.postandcomments.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,7 +14,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"postDetails", "comments", "tags"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +43,7 @@ public class Post {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Builder.Default
     private List<PostComment> comments = new ArrayList<>();
 
     @ManyToMany(
@@ -52,6 +57,7 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Builder.Default
     private Set<Tag> tags = new LinkedHashSet<>();
 
     private LocalDateTime createdAt;
@@ -59,25 +65,40 @@ public class Post {
     private LocalDateTime updatedAt;
 
     public void addComment(PostComment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
         comments.add(comment);
         comment.setPost(this);
     }
 
     public void removeComment(PostComment comment) {
-        comments.remove(comment);
-        comment.setPost(null);
+        if (comments != null) {
+            comments.remove(comment);
+            comment.setPost(null);
+        }
     }
 
     // The addTag method is used for synchronizing the bidirectional association
     public void addTag(Tag tag) {
+        if (tags == null) {
+            tags = new LinkedHashSet<>();
+        }
         tags.add(tag);
+        if (tag.getPosts() == null) {
+            tag.setPosts(new LinkedHashSet<>());
+        }
         tag.getPosts().add(this);
     }
 
     // The removeTag method is used for synchronizing the bidirectional association
     public void removeTag(Tag tag) {
-        tags.remove(tag);
-        tag.getPosts().remove(this);
+        if (tags != null) {
+            tags.remove(tag);
+        }
+        if (tag.getPosts() != null) {
+            tag.getPosts().remove(this);
+        }
     }
 
     // The setDetails method is used for synchronizing both sides of this bidirectional association

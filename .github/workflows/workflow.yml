@@ -36,6 +36,11 @@ jobs:
       - name: Run tests
         run: mvn -B clean test
 
+      - name: Build & Test & Analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify sonar:sonar -Dsonar.token=$SONAR_TOKEN
+
       - name: Build jar
         run: mvn -B clean package -DskipTests
 

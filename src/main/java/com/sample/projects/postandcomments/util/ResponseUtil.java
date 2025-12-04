@@ -1,6 +1,7 @@
 package com.sample.projects.postandcomments.util;
 
 import com.sample.projects.postandcomments.dto.CommonResponse;
+import com.sample.projects.postandcomments.dto.response.AiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 
@@ -33,6 +34,17 @@ public class ResponseUtil {
                 .apiVersion(API_VERSION)
                 .correlationId(generateCorrelationId())
                 .build();
+    }
+
+    public static <T> CommonResponse<T> buildSuccessResponseWithAiResponse(
+            HttpStatus status,
+            String message,
+            T payload,
+            AiResponse aiResponse,
+            HttpServletRequest httpRequest) {
+        CommonResponse<T> commonResponse = buildSuccessResponse(status, message, payload, httpRequest);
+        commonResponse.setAiPayload(aiResponse);
+        return commonResponse;
     }
 
     public static <T> CommonResponse<T> buildErrorResponse(

@@ -28,7 +28,9 @@ public class PostServiceImpl implements PostService {
     private final TagService tagService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, TagService tagService) {
+    public PostServiceImpl(PostRepository postRepository,
+                           PostMapper postMapper,
+                           TagService tagService) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.tagService = tagService;

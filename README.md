@@ -4,6 +4,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)]()
 [![Docker](https://img.shields.io/badge/Docker-Ready-informational)]()
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)]()
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app=alert_status)](https://sonarcloud.io/project/overview?id=post-comments-app)
 [![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)]()
 [![Coverage](https://img.shields.io/badge/Coverage-80%25-success)]()
 [![Code Style](https://img.shields.io/badge/Code%20Style-Google-brightgreen)]()

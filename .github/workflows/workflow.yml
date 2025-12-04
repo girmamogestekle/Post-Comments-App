@@ -36,6 +36,16 @@ jobs:
       - name: Run tests
         run: mvn -B clean test
 
+      - name: Build & Test & Analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
+        run: |
+          mvn -B clean verify sonar:sonar \
+            -Dsonar.projectKey=post-comments-app \
+            -Dsonar.organization=girmamogestekle \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
+
       - name: Build jar
         run: mvn -B clean package -DskipTests
 

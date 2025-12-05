@@ -15,7 +15,7 @@
 ## 📝 Overview
 A real-world simulation of a social engagement backend system where users share posts and interact through comments. This project is built using enterprise-ready backend architecture, applying cloud-native, scalable, and maintainable development principles.
 
-> Tech Stack: Java 17 ▪ Spring Boot ▪ REST API ▪ MySQL ▪ Docker ▪ Swagger ▪ GitHub Actions ▪ Cursor AI
+> Tech Stack: Java 17 ▪ Spring Boot ▪ REST API ▪ SonarQube ▪ MySQL ▪ Docker ▪ Swagger ▪ GitHub Actions ▪ Cursor AI
 
 ---
 

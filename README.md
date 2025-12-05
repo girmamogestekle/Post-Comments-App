@@ -63,7 +63,7 @@ Comment: id, post_id(FK), content, author_id, timestamps
 
 ### 📮 Public Postman Collection  
 ```
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://ethio-equb.postman.co/workspace/My-Workspace~0eb138ab-d434-42af-8f7a-6b51a5bab95e/folder/25853967-939f8ea3-ae8a-4dcb-9111-464e2846b549?action=share&creator=25853967&ctx=documentation&active-environment=25853967-6115b367-1a32-4138-9a65-4c5fed3caa68)
+https://run.pstmn.io/button.svg)](https://ethio-equb.postman.co/workspace/My-Workspace~0eb138ab-d434-42af-8f7a-6b51a5bab95e/folder/25853967-939f8ea3-ae8a-4dcb-9111-464e2846b549?action=share&creator=25853967&ctx=documentation&active-environment=25853967-6115b367-1a32-4138-9a65-4c5fed3caa68
 ```
 ---
 
@@ -75,7 +75,7 @@ mvn spring-boot:run
 
 ### 📘 Swagger UI
 ```
-🔗 **Swagger UI** → https://girmamogestekle.github.io/Post-Comments-App/  
+https://girmamogestekle.github.io/Post-Comments-App/  
 ```
 ---
 

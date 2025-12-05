@@ -5,6 +5,7 @@ import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.service.AiService;
 import com.sample.projects.postandcomments.service.PostService;
+import com.sample.projects.postandcomments.util.Constants;
 import com.sample.projects.postandcomments.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -69,8 +70,8 @@ public class PostController {
                 })
                 .orElseGet(() -> {
                     CommonResponse<PostResponse> response = ResponseUtil.buildErrorResponse(
-                            HttpStatus.NOT_FOUND, "Post not found",
-                            List.of("Post with id " + id + " not found"), httpRequest);
+                            HttpStatus.NOT_FOUND, Constants.POST_NOT_FOUND,
+                            List.of(Constants.POST_WITH_ID_PREFIX + id + Constants.NOT_FOUND_SUFFIX), httpRequest);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
                 });
     }
@@ -94,8 +95,8 @@ public class PostController {
 
         if (!postService.existsById(id)) {
             response = ResponseUtil.buildErrorResponse(
-                    HttpStatus.NOT_FOUND, "Post not found",
-                    List.of("Post with id " + id + " not found"), httpRequest);
+                    HttpStatus.NOT_FOUND, Constants.POST_NOT_FOUND,
+                    List.of(Constants.POST_WITH_ID_PREFIX + id + Constants.NOT_FOUND_SUFFIX), httpRequest);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         
@@ -118,8 +119,8 @@ public class PostController {
             HttpServletRequest httpRequest) {
         if (!postService.existsById(id)) {
             CommonResponse<Object> response = ResponseUtil.buildErrorResponse(
-                    HttpStatus.NOT_FOUND, "Post not found",
-                    List.of("Post with id " + id + " not found"), httpRequest);
+                    HttpStatus.NOT_FOUND, Constants.POST_NOT_FOUND,
+                    List.of(Constants.POST_WITH_ID_PREFIX + id + Constants.NOT_FOUND_SUFFIX), httpRequest);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         

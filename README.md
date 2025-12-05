@@ -75,7 +75,7 @@ mvn spring-boot:run
 
 ### 📘 Swagger UI
 ```
-http://localhost:8080/swagger-ui.html
+🔗 **Swagger UI** → https://girmamogestekle.github.io/Post-Comments-App/  
 ```
 ---
 

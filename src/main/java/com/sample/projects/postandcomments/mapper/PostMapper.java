@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 public class PostMapper {
 
     public Post toEntity(PostRequest request) {
-        Post post = Post.builder()
+        return Post.builder()
                 .title(request.getTitle())
                 .build();
-        return post;
     }
 
     public PostResponse toResponse(Post post) {
@@ -103,7 +102,7 @@ public class PostMapper {
 
         return posts.stream()
                 .map(this::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
 

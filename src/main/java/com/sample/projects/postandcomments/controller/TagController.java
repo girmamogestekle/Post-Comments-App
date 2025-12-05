@@ -29,14 +29,14 @@ public class TagController {
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
         return tagService.findById(id)
-                .map(tag -> ResponseEntity.ok(tag))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Tag> getTagByName(@PathVariable String name) {
         return tagService.findByName(name)
-                .map(tag -> ResponseEntity.ok(tag))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 

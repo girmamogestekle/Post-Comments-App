@@ -251,4 +251,3 @@ class PostControllerTest {
         verify(postService, never()).deleteById(anyLong());
     }
 }
-

@@ -29,7 +29,7 @@ public class PostDetailsController {
     @GetMapping("/{id}")
     public ResponseEntity<PostDetails> getPostDetailsById(@PathVariable Long id) {
         return postDetailsService.findById(id)
-                .map(details -> ResponseEntity.ok(details))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -42,7 +42,7 @@ public class PostDetailsController {
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostDetails> getPostDetailsByPostId(@PathVariable Long postId) {
         return postDetailsService.findByPostId(postId)
-                .map(details -> ResponseEntity.ok(details))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 

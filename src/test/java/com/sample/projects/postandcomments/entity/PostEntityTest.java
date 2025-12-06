@@ -324,4 +324,3 @@ class PostEntityTest {
         assertThat(emptyPost.getTitle()).isNull();
     }
 }
-

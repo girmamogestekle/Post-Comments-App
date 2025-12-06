@@ -298,4 +298,3 @@ class PostRepositoryTest {
         assertThat(foundTag2.getPosts()).contains(foundPost);
     }
 }
-

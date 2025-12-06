@@ -313,4 +313,3 @@ class PostResponseTest {
         assertThat(response.getUpdatedAt()).isNotNull();
     }
 }
-

@@ -374,4 +374,3 @@ class PostMapperTest {
         assertThat(response.getName()).isEqualTo("Spring Boot");
     }
 }
-

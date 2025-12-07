@@ -5,6 +5,7 @@ import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.service.AiService;
 import com.sample.projects.postandcomments.service.PostService;
+import com.sample.projects.postandcomments.util.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,7 +75,7 @@ class PostControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value(201))
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Post created successfully"))
+                .andExpect(jsonPath("$.message").value(Constants.POST_CREATED_SUCCESSFULLY))
                 .andExpect(jsonPath("$.payload.id").value(1L))
                 .andExpect(jsonPath("$.payload.title").value("Test Post Title"));
 
@@ -120,7 +123,7 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Post retrieved successfully"))
+                .andExpect(jsonPath("$.message").value(Constants.POST_RETRIEVED_SUCCESSFULLY))
                 .andExpect(jsonPath("$.payload.id").value(1L))
                 .andExpect(jsonPath("$.payload.title").value("Test Post Title"));
 
@@ -136,7 +139,7 @@ class PostControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("Post not found"))
+                .andExpect(jsonPath("$.message").value("Post with id 999 not found"))
                 .andExpect(jsonPath("$.errors[0]").value("Post with id 999 not found"));
 
         verify(postService).findById(999L);
@@ -161,7 +164,7 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Posts retrieved successfully"))
+                .andExpect(jsonPath("$.message").value(Constants.POST_RETRIEVED_SUCCESSFULLY))
                 .andExpect(jsonPath("$.payload").isArray())
                 .andExpect(jsonPath("$.payload.length()").value(2))
                 .andExpect(jsonPath("$.payload[0].id").value(1L))
@@ -184,7 +187,6 @@ class PostControllerTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(postService.existsById(1L)).thenReturn(true);
         when(postService.update(eq(1L), any(PostRequest.class))).thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/posts/1")
@@ -193,10 +195,9 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Post updated successfully"))
+                .andExpect(jsonPath("$.message").value(Constants.POST_UPDATED_SUCCESSFULLY))
                 .andExpect(jsonPath("$.payload.title").value("Updated Post Title"));
 
-        verify(postService).existsById(1L);
         verify(postService).update(eq(1L), any(PostRequest.class));
     }
 
@@ -207,7 +208,8 @@ class PostControllerTest {
                 .title("Updated Post Title")
                 .build();
 
-        when(postService.existsById(999L)).thenReturn(false);
+        when(postService.update(eq(999L), any(PostRequest.class)))
+                .thenThrow(new com.sample.projects.postandcomments.exception.ResourceNotFoundException("Post", 999L));
 
         mockMvc.perform(put("/api/posts/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,16 +217,15 @@ class PostControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("Post not found"));
+                .andExpect(jsonPath("$.message").value("Post with id 999 not found"));
 
-        verify(postService).existsById(999L);
-        verify(postService, never()).update(anyLong(), any(PostRequest.class));
+        verify(postService).update(eq(999L), any(PostRequest.class));
     }
 
     @Test
     @DisplayName("DELETE /api/posts/{id} - Should delete post successfully")
     void testDeletePost_Success() throws Exception {
-        when(postService.existsById(1L)).thenReturn(true);
+        doNothing().when(postService).deleteById(1L);
 
         mockMvc.perform(delete("/api/posts/1"))
                 .andExpect(status().isNoContent())
@@ -232,22 +233,21 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("Post deleted successfully"));
 
-        verify(postService).existsById(1L);
         verify(postService).deleteById(1L);
     }
 
     @Test
     @DisplayName("DELETE /api/posts/{id} - Should return 404 when post not found")
     void testDeletePost_NotFound() throws Exception {
-        when(postService.existsById(999L)).thenReturn(false);
+        doThrow(new com.sample.projects.postandcomments.exception.ResourceNotFoundException("Post", 999L))
+                .when(postService).deleteById(999L);
 
         mockMvc.perform(delete("/api/posts/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("Post not found"));
+                .andExpect(jsonPath("$.message").value("Post with id 999 not found"));
 
-        verify(postService).existsById(999L);
-        verify(postService, never()).deleteById(anyLong());
+        verify(postService).deleteById(999L);
     }
 }

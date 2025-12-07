@@ -4,6 +4,8 @@ import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.entity.Post;
 import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.exception.ResourceNotFoundException;
+import com.sample.projects.postandcomments.exception.ValidationException;
 import com.sample.projects.postandcomments.mapper.PostMapper;
 import com.sample.projects.postandcomments.repository.PostRepository;
 import com.sample.projects.postandcomments.service.TagService;
@@ -118,14 +120,15 @@ class PostServiceImplTest {
         // Then
         assertThat(result).isNotNull();
         verify(postMapper).toEntity(postRequest);
-        verify(tagService).findById(1L);
-        verify(tagService).findById(2L);
+        // tagService.findById is called twice: once in validateTagIds() and once in the stream
+        verify(tagService, times(2)).findById(1L);
+        verify(tagService, times(2)).findById(2L);
         verify(postRepository).save(any(Post.class));
         verify(postMapper).toResponse(post);
     }
 
     @Test
-    @DisplayName("save - Should ignore non-existent tag IDs")
+    @DisplayName("save - Should throw ValidationException when tag not found")
     void testSave_WithNonExistentTags() {
         // Given
         PostRequest requestWithInvalidTags = PostRequest.builder()
@@ -133,18 +136,16 @@ class PostServiceImplTest {
                 .tagIds(Set.of(999L))
                 .build();
 
-        when(postMapper.toEntity(requestWithInvalidTags)).thenReturn(post);
         when(tagService.findById(999L)).thenReturn(Optional.empty());
-        when(postRepository.save(any(Post.class))).thenReturn(post);
-        when(postMapper.toResponse(post)).thenReturn(postResponse);
 
-        // When
-        PostResponse result = postService.save(requestWithInvalidTags);
+        // When/Then
+        assertThatThrownBy(() -> postService.save(requestWithInvalidTags))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid tag ids provided");
 
-        // Then
-        assertThat(result).isNotNull();
         verify(tagService).findById(999L);
-        verify(postRepository).save(any(Post.class));
+        verify(postMapper, never()).toEntity(any(PostRequest.class));
+        verify(postRepository, never()).save(any(Post.class));
     }
 
     @Test
@@ -264,8 +265,8 @@ class PostServiceImplTest {
 
         // When/Then
         assertThatThrownBy(() -> postService.update(999L, updateRequest))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Post not found with id: 999");
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Post with id 999 not found");
 
         verify(postRepository).findById(999L);
         verify(postRepository, never()).save(any(Post.class));
@@ -298,7 +299,8 @@ class PostServiceImplTest {
 
         // Then
         assertThat(result).isNotNull();
-        verify(tagService).findById(1L);
+        // tagService.findById is called twice: once in validateTagIds() and once in the stream
+        verify(tagService, times(2)).findById(1L);
         verify(postRepository).save(any(Post.class));
     }
 
@@ -325,8 +327,8 @@ class PostServiceImplTest {
 
         // When/Then
         assertThatThrownBy(() -> postService.deleteById(999L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Post not found with id: 999");
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Post with id 999 not found");
 
         verify(postRepository).existsById(999L);
         verify(postRepository, never()).deleteById(anyLong());
@@ -358,5 +360,116 @@ class PostServiceImplTest {
         // Then
         assertThat(result).isFalse();
         verify(postRepository).existsById(999L);
+    }
+
+    @Test
+    @DisplayName("findById - Should throw ValidationException when id is null")
+    void testFindById_NullId() {
+        // When/Then
+        assertThatThrownBy(() -> postService.findById(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Post id cannot be null");
+    }
+
+    @Test
+    @DisplayName("update - Should throw ValidationException when id is null")
+    void testUpdate_NullId() {
+        // Given
+        PostRequest updateRequest = PostRequest.builder()
+                .title("Updated Title")
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> postService.update(null, updateRequest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Post id cannot be null");
+    }
+
+    @Test
+    @DisplayName("deleteById - Should throw ValidationException when id is null")
+    void testDeleteById_NullId() {
+        // When/Then
+        assertThatThrownBy(() -> postService.deleteById(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Post id cannot be null");
+    }
+
+    @Test
+    @DisplayName("existsById - Should throw ValidationException when id is null")
+    void testExistsById_NullId() {
+        // When/Then
+        assertThatThrownBy(() -> postService.existsById(null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Post id cannot be null");
+    }
+
+    @Test
+    @DisplayName("save - Should throw ValidationException when tag id is null")
+    void testSave_WithNullTagId() {
+        // Given
+        Set<Long> tagIdsWithNull = new HashSet<>();
+        tagIdsWithNull.add(1L);
+        tagIdsWithNull.add(null);
+        
+        PostRequest requestWithNullTagId = PostRequest.builder()
+                .title("Test Post")
+                .tagIds(tagIdsWithNull)
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> postService.save(requestWithNullTagId))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid tag ids provided");
+    }
+
+    @Test
+    @DisplayName("save - Should throw ValidationException when tag id is invalid")
+    void testSave_WithInvalidTagId() {
+        // Given
+        PostRequest requestWithInvalidTagId = PostRequest.builder()
+                .title("Test Post")
+                .tagIds(Set.of(0L, -1L))
+                .build();
+
+        // When/Then
+        assertThatThrownBy(() -> postService.save(requestWithInvalidTagId))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid tag ids provided");
+    }
+
+    @Test
+    @DisplayName("save - Should throw ValidationException when tag not found")
+    void testSave_WithNonExistentTag() {
+        // Given
+        PostRequest requestWithNonExistentTag = PostRequest.builder()
+                .title("Test Post")
+                .tagIds(Set.of(999L))
+                .build();
+
+        when(tagService.findById(999L)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThatThrownBy(() -> postService.save(requestWithNonExistentTag))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid tag ids provided");
+    }
+
+    @Test
+    @DisplayName("update - Should throw ValidationException when tag id is invalid")
+    void testUpdate_WithInvalidTagId() {
+        // Given
+        PostRequest updateRequest = PostRequest.builder()
+                .title("Updated Title")
+                .tagIds(Set.of(0L))
+                .build();
+
+        // When/Then
+        // Exception is thrown in validateTagIds() before reaching repository call
+        assertThatThrownBy(() -> postService.update(1L, updateRequest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Invalid tag ids provided");
+
+        verify(postRepository, never()).findById(anyLong());
+        verify(postRepository, never()).save(any(Post.class));
     }
 }

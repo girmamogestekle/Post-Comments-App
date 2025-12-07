@@ -83,8 +83,10 @@ class PostRequestTest {
         Set<ConstraintViolation<PostRequest>> violations = validator.validate(request);
 
         // Then
-        assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("Title is required");
+        // Empty string violates both @NotBlank and @Size(min = 1) constraints
+        assertThat(violations).hasSize(2);
+        assertThat(violations).extracting("message")
+                .contains("Title is required", "Title must be between 1 and 255 characters");
     }
 
     @Test
@@ -178,12 +180,29 @@ class PostRequestTest {
     }
 
     @Test
-    @DisplayName("Valid PostRequest - Should accept long title")
-    void testValidPostRequest_LongTitle() {
+    @DisplayName("Invalid PostRequest - Should fail when title exceeds 255 characters")
+    void testInvalidPostRequest_TitleExceedsMaxLength() {
         // Given
-        String longTitle = "A".repeat(1000);
+        String longTitle = "A".repeat(256); // Exceeds max length of 255
         PostRequest request = PostRequest.builder()
                 .title(longTitle)
+                .build();
+
+        // When
+        Set<ConstraintViolation<PostRequest>> violations = validator.validate(request);
+
+        // Then
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).contains("Title must be between 1 and 255 characters");
+    }
+
+    @Test
+    @DisplayName("Valid PostRequest - Should accept title at max length (255 characters)")
+    void testValidPostRequest_MaxLengthTitle() {
+        // Given
+        String maxLengthTitle = "A".repeat(255);
+        PostRequest request = PostRequest.builder()
+                .title(maxLengthTitle)
                 .build();
 
         // When

@@ -4,7 +4,10 @@ import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.entity.Post;
 import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.exception.ResourceNotFoundException;
+import com.sample.projects.postandcomments.exception.ValidationException;
 import com.sample.projects.postandcomments.mapper.PostMapper;
+import com.sample.projects.postandcomments.util.Constants;
 import com.sample.projects.postandcomments.repository.PostRepository;
 import com.sample.projects.postandcomments.service.PostService;
 import com.sample.projects.postandcomments.service.TagService;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +42,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse save(PostRequest request) {
+        validateTagIds(request.getTagIds());
+        
         Post post = postMapper.toEntity(request);
         
         // Set timestamps
@@ -47,7 +53,7 @@ public class PostServiceImpl implements PostService {
         // Handle tags if provided
         if (request.getTagIds() != null && !request.getTagIds().isEmpty()) {
             Set<Tag> tags = request.getTagIds().stream()
-                    .map(tagId -> tagService.findById(tagId))
+                    .map(tagService::findById)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -61,6 +67,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Optional<PostResponse> findById(Long id) {
+        if (id == null) {
+            throw new ValidationException(Constants.POST_ID_CANNOT_BE_NULL);
+        }
         return postRepository.findById(id)
                 .map(postMapper::toResponse);
     }
@@ -74,8 +83,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse update(Long id, PostRequest request) {
+        if (id == null) {
+            throw new ValidationException(Constants.POST_ID_CANNOT_BE_NULL);
+        }
+        
+        validateTagIds(request.getTagIds());
+        
         Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", id));
         
         // Update title
         existingPost.setTitle(request.getTitle());
@@ -84,7 +99,7 @@ public class PostServiceImpl implements PostService {
         // Handle tags if provided
         if (request.getTagIds() != null) {
             Set<Tag> tags = request.getTagIds().stream()
-                    .map(tagId -> tagService.findById(tagId))
+                    .map(tagService::findById)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -97,8 +112,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteById(Long id) {
+        if (id == null) {
+            throw new ValidationException(Constants.POST_ID_CANNOT_BE_NULL);
+        }
         if (!postRepository.existsById(id)) {
-            throw new RuntimeException("Post not found with id: " + id);
+            throw new ResourceNotFoundException("Post", id);
         }
         postRepository.deleteById(id);
     }
@@ -106,7 +124,28 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public boolean existsById(Long id) {
+        if (id == null) {
+            throw new ValidationException(Constants.POST_ID_CANNOT_BE_NULL);
+        }
         return postRepository.existsById(id);
+    }
+    
+    private void validateTagIds(Set<Long> tagIds) {
+        if (tagIds != null && !tagIds.isEmpty()) {
+            List<String> errors = new ArrayList<>();
+            for (Long tagId : tagIds) {
+                if (tagId == null) {
+                    errors.add("Tag id cannot be null");
+                } else if (tagId <= 0) {
+                    errors.add("Tag id must be greater than 0");
+                } else if (tagService.findById(tagId).isEmpty()) {
+                    errors.add(String.format("Tag with id %d not found", tagId));
+                }
+            }
+            if (!errors.isEmpty()) {
+                throw new ValidationException("Invalid tag ids provided", errors);
+            }
+        }
     }
 
 }

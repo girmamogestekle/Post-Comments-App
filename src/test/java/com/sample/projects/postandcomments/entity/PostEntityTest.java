@@ -1,5 +1,9 @@
 package com.sample.projects.postandcomments.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +24,12 @@ class PostEntityTest {
     private PostDetails postDetails;
     private Tag tag1;
     private Tag tag2;
+    private Validator validator;
 
     @BeforeEach
     void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
         post = Post.builder()
                 .id(1L)
                 .title("Test Post")
@@ -322,5 +329,88 @@ class PostEntityTest {
         assertThat(emptyPost).isNotNull();
         assertThat(emptyPost.getId()).isNull();
         assertThat(emptyPost.getTitle()).isNull();
+    }
+
+    @Test
+    @DisplayName("Validation - Should pass when title is valid")
+    void testValidation_ValidTitle() {
+        // Given
+        Post validPost = Post.builder()
+                .title("Valid Post Title")
+                .build();
+
+        // When
+        Set<ConstraintViolation<Post>> violations = validator.validate(validPost);
+
+        // Then
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Validation - Should fail when title is null")
+    void testValidation_NullTitle() {
+        // Given
+        Post postWithNullTitle = Post.builder()
+                .title(null)
+                .build();
+
+        // When
+        Set<ConstraintViolation<Post>> violations = validator.validate(postWithNullTitle);
+
+        // Then
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Title is required");
+        assertThat(violations.iterator().next().getPropertyPath().toString()).isEqualTo("title");
+    }
+
+    @Test
+    @DisplayName("Validation - Should fail when title is blank")
+    void testValidation_BlankTitle() {
+        // Given
+        Post postWithBlankTitle = Post.builder()
+                .title("")
+                .build();
+
+        // When
+        Set<ConstraintViolation<Post>> violations = validator.validate(postWithBlankTitle);
+
+        // Then
+        // Empty string violates both @NotBlank and @Size(min = 1) constraints
+        assertThat(violations).hasSize(2);
+        assertThat(violations).extracting("message")
+                .contains("Title is required", "Title must be between 1 and 255 characters");
+    }
+
+    @Test
+    @DisplayName("Validation - Should fail when title exceeds 255 characters")
+    void testValidation_TitleExceedsMaxLength() {
+        // Given
+        String longTitle = "A".repeat(256);
+        Post postWithLongTitle = Post.builder()
+                .title(longTitle)
+                .build();
+
+        // When
+        Set<ConstraintViolation<Post>> violations = validator.validate(postWithLongTitle);
+
+        // Then
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).contains("Title must be between 1 and 255 characters");
+    }
+
+    @Test
+    @DisplayName("Validation - Should pass when title is exactly 255 characters")
+    void testValidation_TitleAtMaxLength() {
+        // Given
+        String maxLengthTitle = "A".repeat(255);
+        Post postWithMaxLengthTitle = Post.builder()
+                .title(maxLengthTitle)
+                .build();
+
+        // When
+        Set<ConstraintViolation<Post>> violations = validator.validate(postWithMaxLengthTitle);
+
+        // Then
+        assertThat(violations).isEmpty();
     }
 }

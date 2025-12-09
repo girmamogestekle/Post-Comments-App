@@ -9,6 +9,7 @@ import com.sample.projects.postandcomments.exception.ValidationException;
 import com.sample.projects.postandcomments.mapper.PostMapper;
 import com.sample.projects.postandcomments.repository.PostRepository;
 import com.sample.projects.postandcomments.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PostServiceImpl Unit Tests")
 class PostServiceImplTest {

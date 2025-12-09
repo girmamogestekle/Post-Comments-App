@@ -4,6 +4,7 @@ import com.sample.projects.postandcomments.entity.Post;
 import com.sample.projects.postandcomments.entity.PostComment;
 import com.sample.projects.postandcomments.entity.PostDetails;
 import com.sample.projects.postandcomments.entity.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Slf4j
 @DisplayName("PostRepository Data Layer Tests")
 class PostRepositoryTest {
 

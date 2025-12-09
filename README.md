@@ -104,7 +104,7 @@ https://girmamogestekle.github.io/Post-Comments-App/
 | JWT Authentication                 | Soon    |
 | Pagination                         | Soon    |
 | AWS Cloud Deployment               | Planned |
-| Distributed Logging (Grafana/Loki) | Planned |
+| Distributed Logging (Grafana/Loki) | Done    |
 | TestContainers                     | Planned |
 ```
 ---

@@ -5,6 +5,9 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
+# create logs directory & make sure it's writable
+RUN mkdir -p /app/logs
+
 # Copy pom.xml and download dependencies (this layer will be cached if pom.xml doesn't change)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
@@ -21,7 +24,9 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Create a non-root user for security
-RUN groupadd -r spring && useradd -r -g spring spring
+RUN groupadd -r spring && useradd -r -g spring spring \
+    && mkdir -p /app/logs \
+    && chown -R spring:spring /app
 USER spring
 
 # Copy the JAR file from build stage

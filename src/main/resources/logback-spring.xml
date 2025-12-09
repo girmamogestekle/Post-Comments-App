@@ -1,0 +1,55 @@
+<configuration scan="true" debug="false">
+
+    <!-- Define app name and paths -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_FILE" value="${LOG_PATH}/${APP_NAME}.current.log"/>
+
+    <!-- ============================= -->
+    <!-- Console Appender (for terminal) -->
+    <!-- ============================= -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level
+                [traceId=%X{traceId:-}, spanId=%X{spanId:-}, corrId=%X{correlationId:-}]
+                %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- ============================= -->
+    <!-- JSON File Appender (for Loki) -->
+    <!-- ============================= -->
+    <appender name="LOKI_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>2</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <logLevel/>
+                <threadName/>
+                <loggerName/>
+                <!-- includes traceId, spanId, correlationId, etc -->
+                <mdc/>
+                <message/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- ============================= -->
+    <!-- Root Logger -->
+    <!-- ============================= -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOKI_JSON"/>
+    </root>
+
+</configuration>
+
+
+

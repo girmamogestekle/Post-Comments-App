@@ -53,6 +53,18 @@ A real-world simulation of a social engagement backend system where users share 
 ```
 ---
 
+### 🗂️ Project Folder Structure
+```
+Post-Comments-App/
+├─ docs/
+├─ logs/                                # Spring Boot writes logs here
+├─monitoring/
+   ├─ docker-compose.observability.yml  # Main stack compose file
+   ├─ promtail-config.yml
+   └─ prometheus.yml
+├─ src/
+```
+
 ### 🗄️ Database Schema
 
 ```
@@ -71,6 +83,12 @@ https://run.pstmn.io/button.svg)](https://ethio-equb.postman.co/workspace/My-Wor
 ```
 mvn spring-boot:run
 ```
+#### Run Loki + Promtail + Prometheus in Local Machine Using Docker
+```
+cd monitoring
+docker compose -f docker-compose.observability.yml up -d
+```
+
 ---
 
 ### 📘 Swagger UI

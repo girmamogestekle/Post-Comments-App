@@ -6,6 +6,7 @@ import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.service.AiService;
 import com.sample.projects.postandcomments.service.PostService;
 import com.sample.projects.postandcomments.util.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Slf4j
 @WebMvcTest(PostController.class)
 @DisplayName("PostController API Integration Tests")
 class PostControllerTest {
@@ -52,6 +54,7 @@ class PostControllerTest {
 
     @BeforeEach
     void setUp() {
+        log.debug("Setting up test data for PostControllerTest");
         postRequest = PostRequest.builder()
                 .title("Test Post Title")
                 .build();
@@ -62,6 +65,7 @@ class PostControllerTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+        log.debug("Test data setup completed");
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.sample.projects.postandcomments.util.Constants;
 import com.sample.projects.postandcomments.util.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -36,7 +38,9 @@ public class PostController {
             @Valid @RequestBody PostRequest request,
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
+        log.info("Creating new post with title: {}, includeAi: {}", request.getTitle(), includeAi);
         PostResponse createdPost = postService.save(request);
+        log.debug("Post created successfully with id: {}", createdPost.getId());
 
         CommonResponse<PostResponse> response;
 
@@ -57,8 +61,13 @@ public class PostController {
             @PathVariable Long id,
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
+        log.info("Retrieving post by id: {}, includeAi: {}", id, includeAi);
         PostResponse post = postService.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", id));
+                .orElseThrow(() -> {
+                    log.warn("Post not found with id: {}", id);
+                    return new ResourceNotFoundException("Post", id);
+                });
+        log.debug("Post retrieved successfully with id: {}", id);
         
         CommonResponse<PostResponse> response;
         if(includeAi){
@@ -73,7 +82,9 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<CommonResponse<List<PostResponse>>> getAllPosts(HttpServletRequest httpRequest) {
+        log.info("Retrieving all posts");
         List<PostResponse> posts = postService.findAll();
+        log.debug("Retrieved {} posts", posts.size());
         CommonResponse<List<PostResponse>> response = ResponseUtil.buildSuccessResponse(
                 HttpStatus.OK, Constants.POST_RETRIEVED_SUCCESSFULLY, posts, httpRequest);
         return ResponseEntity.ok(response);
@@ -85,8 +96,9 @@ public class PostController {
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             @Valid @RequestBody PostRequest request,
             HttpServletRequest httpRequest) {
-        
+        log.info("Updating post with id: {}, includeAi: {}", id, includeAi);
         PostResponse updatedPost = postService.update(id, request);
+        log.debug("Post updated successfully with id: {}", id);
 
         CommonResponse<PostResponse> response;
         if(includeAi){
@@ -104,7 +116,9 @@ public class PostController {
     public ResponseEntity<CommonResponse<Object>> deletePost(
             @PathVariable Long id,
             HttpServletRequest httpRequest) {
+        log.info("Deleting post with id: {}", id);
         postService.deleteById(id);
+        log.debug("Post deleted successfully with id: {}", id);
         CommonResponse<Object> response = ResponseUtil.buildSuccessResponse(
                 HttpStatus.NO_CONTENT, "Post deleted successfully", null, httpRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);

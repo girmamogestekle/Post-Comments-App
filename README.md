@@ -62,7 +62,9 @@ Post-Comments-App/
    ├─ docker-compose.observability.yml  # Main stack compose file
    ├─ promtail-config.yml
    └─ prometheus.yml
-├─ src/
+├─ src/main/
+    └─ resources/
+        └─ application-remote.properties         # Docker and Cloud Environments
 ```
 
 ### 🗄️ Database Schema
@@ -81,7 +83,7 @@ https://run.pstmn.io/button.svg)](https://ethio-equb.postman.co/workspace/My-Wor
 
 ### 🚀 Run Instructions
 ```
-mvn spring-boot:run
+SPRING_PROFILES_ACTIVE=remote mvn spring-boot:run
 ```
 #### Run Loki + Promtail + Prometheus in Local Machine Using Docker
 ```

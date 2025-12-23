@@ -1,11 +1,6 @@
 version: "3.8"
 
 services:
-  post-comments-app:
-    # ...
-    volumes:
-      - app_logs:/app/logs
-
   loki:
     image: grafana/loki:2.9.0
     container_name: loki

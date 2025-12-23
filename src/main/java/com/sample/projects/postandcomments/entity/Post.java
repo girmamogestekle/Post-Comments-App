@@ -3,14 +3,9 @@ package com.sample.projects.postandcomments.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,16 +14,13 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(exclude = {"postDetails", "comments", "tags"})
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity(name = "Post")
 @Table(name = "post")
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Post extends BaseEntity {
 
     @NotBlank(message = "Title is required")
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
@@ -64,10 +56,6 @@ public class Post {
     )
     @Builder.Default
     private Set<Tag> tags = new LinkedHashSet<>();
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     public void addComment(PostComment comment) {
         if (comments == null) {
@@ -121,7 +109,7 @@ public class Post {
     public boolean equals(Object o) {
         if(this == o)  return true;
         if(!(o instanceof Post)) return false;
-        return id != null && id.equals(((Post) o).getId());
+        return getId() != null && getId().equals(((Post) o).getId());
     }
 
     @Override

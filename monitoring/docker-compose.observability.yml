@@ -13,7 +13,7 @@ services:
     container_name: promtail
     volumes:
       - ../logs:/var/log/apps        # your app log folder
-      - ./promtail-config.yml:/etc/promtail/config.yml
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
     command: [ "-config.file=/etc/promtail/config.yml" ]
     depends_on:
       - loki
@@ -37,3 +37,6 @@ services:
     depends_on:
       - loki
       - prometheus
+
+volumes:
+  app_logs:

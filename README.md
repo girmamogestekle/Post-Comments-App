@@ -53,6 +53,20 @@ A real-world simulation of a social engagement backend system where users share 
 ```
 ---
 
+### 🗂️ Project Folder Structure
+```
+Post-Comments-App/
+├─ docs/
+├─ logs/                                # Spring Boot writes logs here
+├─monitoring/
+   ├─ docker-compose.observability.yml  # Main stack compose file
+   ├─ promtail-config.yml
+   └─ prometheus.yml
+├─ src/main/
+    └─ resources/
+        └─ application-remote.properties         # Docker and Cloud Environments
+```
+
 ### 🗄️ Database Schema
 
 ```
@@ -69,8 +83,14 @@ https://run.pstmn.io/button.svg)](https://ethio-equb.postman.co/workspace/My-Wor
 
 ### 🚀 Run Instructions
 ```
-mvn spring-boot:run
+SPRING_PROFILES_ACTIVE=remote mvn spring-boot:run
 ```
+#### Run Loki + Promtail + Prometheus in Local Machine Using Docker
+```
+cd monitoring
+docker compose -f docker-compose.observability.yml up -d
+```
+
 ---
 
 ### 📘 Swagger UI
@@ -86,7 +106,7 @@ https://girmamogestekle.github.io/Post-Comments-App/
 | JWT Authentication                 | Soon    |
 | Pagination                         | Soon    |
 | AWS Cloud Deployment               | Planned |
-| Distributed Logging (Grafana/Loki) | Planned |
+| Distributed Logging (Grafana/Loki) | Done    |
 | TestContainers                     | Planned |
 ```
 ---

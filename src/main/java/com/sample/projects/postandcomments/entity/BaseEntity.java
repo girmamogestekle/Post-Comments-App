@@ -25,12 +25,10 @@ public abstract class BaseEntity {
     private Long id;
 
     @CreatedDate
-//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name ="created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-//    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

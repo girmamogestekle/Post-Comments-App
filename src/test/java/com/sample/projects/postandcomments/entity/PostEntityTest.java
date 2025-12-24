@@ -1,5 +1,6 @@
 package com.sample.projects.postandcomments.entity;
 
+import com.sample.projects.postandcomments.config.TestJpaAuditingConfig;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("Post Entity Tests")
+@Import(TestJpaAuditingConfig.class)
 class PostEntityTest {
 
     private Post post;

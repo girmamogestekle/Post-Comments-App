@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Slf4j
 @Configuration
+@Profile("!test")
 public class AiConfig {
 
     // Spring AI auto-configures ChatClient.Builder for you

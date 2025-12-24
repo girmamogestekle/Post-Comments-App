@@ -40,7 +40,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
         run: |
-          mvn -B clean verify sonar:sonar \
+          mvn -B clean verify \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=post-comments-app \
             -Dsonar.organization=girmamogestekle \

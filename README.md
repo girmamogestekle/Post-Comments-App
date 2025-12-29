@@ -1,4 +1,4 @@
-# 📌 Post & Comments System
+# 📌 Post-Comments Application: Version-1
 
 [![Java](https://img.shields.io/badge/Java-17-blue)](https://openjdk.org/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green)](https://spring.io/projects/spring-boot)
@@ -13,23 +13,23 @@
 ---
 
 ## 📝 Overview
-A real-world simulation of a social engagement backend system where users share postEntities and interact through comments. This project is built using enterprise-ready backend architecture, applying cloud-native, scalable, and maintainable development principles.
+A real-world simulation of a social engagement backend system where users share posts and interact through comments. This project is built using enterprise-ready backend architecture, applying cloud-native, scalable, and maintainable development principles.
 
-> Tech Stack: Java 17 ▪ Spring Boot ▪ REST API ▪ SonarQube ▪ MySQL ▪ Docker ▪ Swagger ▪ GitHub Actions ▪ Cursor AI
+> Tech Stack: Java 17 ▪ Spring Boot ▪ REST API ▪ SonarQube ▪ H2DB ▪ Docker ▪ Swagger ▪ GitHub Actions ▪ Cursor AI
 
 ---
 
 ## ✨ Features
 
-| Category | Capability |
-|---------|------------|
-| Posts | Create, update, delete, list postEntities |
-| Comments | Full comment lifecycle |
-| API Style | Clean, versioned RESTful endpoints |
-| Documentation | Live Swagger UI |
-| Logging | Structured & centralized logs |
+| Category       | Capability                                     |
+|----------------|------------------------------------------------|
+| Posts          | Create, update, delete, list posts             |
+| Post-Detail    | Create, update, delete, list post-Details      |
+| API Style      | Clean, versioned RESTful endpoints             |
+| Documentation  | Live Swagger UI                                |
+| Logging        | Structured & centralized logs                  |
 | Error Handling | Global exception patterns with clear responses |
-| DB Design | Relational model, Post → Comments (1:N) |
+| DB Design      | Relational model, Post → Details (1:1)         |
 
 ---
 
@@ -45,7 +45,7 @@ A real-world simulation of a social engagement backend system where users share 
 📱 Client
    │
    ▼
-🌐 Controllers → ⚙️ Services → 🗂️ Repositories → 🗄️ MySQL
+🌐 Controllers → ⚙️ Services → 🗂️ Repositories → 🗄️ H2DB
        ↘ 🔍 Logging
        ↘ ✔ Validation
        ↘ 🚨 Exception Handling
@@ -103,11 +103,11 @@ https://girmamogestekle.github.io/Post-Comments-App/
 ```
 | Feature                            | Status  |
 | ---------------------------------- | ------- |
+| Distributed Logging (Grafana/Loki) | Done    |
+| TestContainers                     | Working |
 | JWT Authentication                 | Soon    |
 | Pagination                         | Soon    |
 | AWS Cloud Deployment               | Planned |
-| Distributed Logging (Grafana/Loki) | Done    |
-| TestContainers                     | Planned |
 ```
 ---
 
@@ -117,12 +117,11 @@ https://girmamogestekle.github.io/Post-Comments-App/
 
 This backend integrates Spring AI and OpenAI to provide intelligent features:
 
-| Feature             | Description                          | Endpoint                           |
-|---------------------|--------------------------------------|------------------------------------|
-| Post AI Explanation | Returns simplified summary using LLM | GET /api/postEntities/{id}?includeAi=true |
+| Feature             | Description                          | Endpoint                                 |
+|---------------------|--------------------------------------|------------------------------------------|
+| Post AI Explanation | Returns simplified summary using LLM | GET /api/v1/post/get/{id}?includeAi=true |
 
 > Powered by Spring AI + OpenAI  
-> Easily extendable to enrich Comments, Tags, and Post Details
 ```
 ---
 

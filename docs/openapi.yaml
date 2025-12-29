@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Post and Comments API
+  title: PostEntity and Comments API
   description: |
     RESTful API for managing posts, comments, post details, and tags.
     
@@ -26,13 +26,13 @@ servers:
 
 tags:
   - name: Posts
-    description: Operations related to posts
+    description: Operations related to postEntities
   - name: Comments
-    description: Operations related to post comments
-  - name: Post Details
-    description: Operations related to post details
+    description: Operations related to postEntity comments
+  - name: PostEntity Details
+    description: Operations related to postEntity details
   - name: Tags
-    description: Operations related to tags
+    description: Operations related to tagEntities
 
 paths:
   # Posts endpoints
@@ -40,12 +40,12 @@ paths:
     get:
       tags:
         - Posts
-      summary: Get all posts
-      description: Retrieves a list of all posts
+      summary: Get all postEntities
+      description: Retrieves a list of all postEntities
       operationId: getAllPosts
       responses:
         '200':
-          description: Successfully retrieved posts
+          description: Successfully retrieved postEntities
           content:
             application/json:
               schema:
@@ -68,8 +68,8 @@ paths:
     post:
       tags:
         - Posts
-      summary: Create a new post
-      description: Creates a new post with the provided information
+      summary: Create a new postEntity
+      description: Creates a new postEntity with the provided information
       operationId: createPost
       requestBody:
         required: true
@@ -82,14 +82,14 @@ paths:
               tagIds: [1, 2]
       responses:
         '201':
-          description: Post created successfully
+          description: PostEntity created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostResponseWrapper'
               example:
                 status: 201
-                message: "Post created successfully"
+                message: "PostEntity created successfully"
                 success: true
                 payload:
                   id: 1
@@ -105,14 +105,14 @@ paths:
     get:
       tags:
         - Posts
-      summary: Get post by ID
-      description: Retrieves a specific post by its ID
+      summary: Get postEntity by ID
+      description: Retrieves a specific postEntity by its ID
       operationId: getPostById
       parameters:
         - $ref: '#/components/parameters/PostId'
       responses:
         '200':
-          description: Successfully retrieved post
+          description: Successfully retrieved postEntity
           content:
             application/json:
               schema:
@@ -125,8 +125,8 @@ paths:
     put:
       tags:
         - Posts
-      summary: Update a post
-      description: Updates an existing post with the provided information
+      summary: Update a postEntity
+      description: Updates an existing postEntity with the provided information
       operationId: updatePost
       parameters:
         - $ref: '#/components/parameters/PostId'
@@ -137,11 +137,11 @@ paths:
             schema:
               $ref: '#/components/schemas/PostRequest'
             example:
-              title: "Updated Post Title"
+              title: "Updated PostEntity Title"
               tagIds: [1, 3]
       responses:
         '200':
-          description: Post updated successfully
+          description: PostEntity updated successfully
           content:
             application/json:
               schema:
@@ -156,14 +156,14 @@ paths:
     delete:
       tags:
         - Posts
-      summary: Delete a post
-      description: Deletes a post by its ID
+      summary: Delete a postEntity
+      description: Deletes a postEntity by its ID
       operationId: deletePost
       parameters:
         - $ref: '#/components/parameters/PostId'
       responses:
         '204':
-          description: Post deleted successfully
+          description: PostEntity deleted successfully
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -188,7 +188,7 @@ paths:
                   $ref: '#/components/schemas/PostComment'
               example:
                 - id: 1
-                  review: "Great post!"
+                  review: "Great postEntity!"
                   post:
                     id: 1
                   createdAt: "2025-12-02T10:30:00"
@@ -198,7 +198,7 @@ paths:
       tags:
         - Comments
       summary: Create a new comment
-      description: Creates a new comment for a post
+      description: Creates a new comment for a postEntity
       operationId: createComment
       requestBody:
         required: true
@@ -207,7 +207,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostComment'
             example:
-              review: "This is a great post!"
+              review: "This is a great postEntity!"
               post:
                 id: 1
       responses:
@@ -301,14 +301,14 @@ paths:
     get:
       tags:
         - Comments
-      summary: Get comments by post ID
-      description: Retrieves all comments for a specific post
+      summary: Get comments by postEntity ID
+      description: Retrieves all comments for a specific postEntity
       operationId: getCommentsByPostId
       parameters:
         - name: postId
           in: path
           required: true
-          description: Post ID
+          description: PostEntity ID
           schema:
             type: integer
             format: int64
@@ -322,17 +322,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/PostComment'
 
-  # Post Details endpoints
+  # PostEntity Details endpoints
   /api/post-details:
     get:
       tags:
-        - Post Details
-      summary: Get all post details
-      description: Retrieves a list of all post details
+        - PostEntity Details
+      summary: Get all postEntity details
+      description: Retrieves a list of all postEntity details
       operationId: getAllPostDetails
       responses:
         '200':
-          description: Successfully retrieved post details
+          description: Successfully retrieved postEntity details
           content:
             application/json:
               schema:
@@ -341,7 +341,7 @@ paths:
                   $ref: '#/components/schemas/PostDetails'
               example:
                 - id: 1
-                  description: "Detailed description of the post"
+                  description: "Detailed description of the postEntity"
                   post:
                     id: 1
                   createdAt: "2025-12-02T10:00:00"
@@ -349,9 +349,9 @@ paths:
 
     post:
       tags:
-        - Post Details
-      summary: Create new post details
-      description: Creates details for a post
+        - PostEntity Details
+      summary: Create new postEntity details
+      description: Creates details for a postEntity
       operationId: createPostDetails
       requestBody:
         required: true
@@ -360,12 +360,12 @@ paths:
             schema:
               $ref: '#/components/schemas/PostDetails'
             example:
-              description: "This is a detailed description of the post content"
+              description: "This is a detailed description of the postEntity content"
               post:
                 id: 1
       responses:
         '201':
-          description: Post details created successfully
+          description: PostEntity details created successfully
           content:
             application/json:
               schema:
@@ -378,39 +378,39 @@ paths:
   /api/post-details/{id}:
     get:
       tags:
-        - Post Details
-      summary: Get post details by ID
-      description: Retrieves post details by its ID
+        - PostEntity Details
+      summary: Get postEntity details by ID
+      description: Retrieves postEntity details by its ID
       operationId: getPostDetailsById
       parameters:
         - name: id
           in: path
           required: true
-          description: Post details ID
+          description: PostEntity details ID
           schema:
             type: integer
             format: int64
       responses:
         '200':
-          description: Successfully retrieved post details
+          description: Successfully retrieved postEntity details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostDetails'
         '404':
-          description: Post details not found
+          description: PostEntity details not found
 
     put:
       tags:
-        - Post Details
-      summary: Update post details
-      description: Updates existing post details
+        - PostEntity Details
+      summary: Update postEntity details
+      description: Updates existing postEntity details
       operationId: updatePostDetails
       parameters:
         - name: id
           in: path
           required: true
-          description: Post details ID
+          description: PostEntity details ID
           schema:
             type: integer
             format: int64
@@ -422,70 +422,70 @@ paths:
               $ref: '#/components/schemas/PostDetails'
       responses:
         '200':
-          description: Post details updated successfully
+          description: PostEntity details updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostDetails'
         '404':
-          description: Post details not found
+          description: PostEntity details not found
 
     delete:
       tags:
-        - Post Details
-      summary: Delete post details
-      description: Deletes post details by its ID
+        - PostEntity Details
+      summary: Delete postEntity details
+      description: Deletes postEntity details by its ID
       operationId: deletePostDetails
       parameters:
         - name: id
           in: path
           required: true
-          description: Post details ID
+          description: PostEntity details ID
           schema:
             type: integer
             format: int64
       responses:
         '204':
-          description: Post details deleted successfully
+          description: PostEntity details deleted successfully
         '404':
-          description: Post details not found
+          description: PostEntity details not found
 
   /api/post-details/post/{postId}:
     get:
       tags:
-        - Post Details
-      summary: Get post details by post ID
-      description: Retrieves post details for a specific post
+        - PostEntity Details
+      summary: Get postEntity details by postEntity ID
+      description: Retrieves postEntity details for a specific postEntity
       operationId: getPostDetailsByPostId
       parameters:
         - name: postId
           in: path
           required: true
-          description: Post ID
+          description: PostEntity ID
           schema:
             type: integer
             format: int64
       responses:
         '200':
-          description: Successfully retrieved post details
+          description: Successfully retrieved postEntity details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostDetails'
         '404':
-          description: Post details not found
+          description: PostEntity details not found
 
   # Tags endpoints
   /api/tags:
     get:
       tags:
         - Tags
-      summary: Get all tags
-      description: Retrieves a list of all tags
+      summary: Get all tagEntities
+      description: Retrieves a list of all tagEntities
       operationId: getAllTags
       responses:
         '200':
-          description: Successfully retrieved tags
+          description: Successfully retrieved tagEntities
           content:
             application/json:
               schema:
@@ -514,7 +514,7 @@ paths:
               name: "Spring Boot"
       responses:
         '201':
-          description: Tag created successfully
+          description: TagEntity created successfully
           content:
             application/json:
               schema:
@@ -522,7 +522,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
         '409':
-          description: Tag with this name already exists
+          description: TagEntity with this name already exists
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -537,7 +537,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Tag ID
+          description: TagEntity ID
           schema:
             type: integer
             format: int64
@@ -549,7 +549,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
         '404':
-          description: Tag not found
+          description: TagEntity not found
 
     put:
       tags:
@@ -561,7 +561,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Tag ID
+          description: TagEntity ID
           schema:
             type: integer
             format: int64
@@ -573,15 +573,15 @@ paths:
               $ref: '#/components/schemas/Tag'
       responses:
         '200':
-          description: Tag updated successfully
+          description: TagEntity updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tag'
         '404':
-          description: Tag not found
+          description: TagEntity not found
         '409':
-          description: Tag with this name already exists
+          description: TagEntity with this name already exists
 
     delete:
       tags:
@@ -593,15 +593,15 @@ paths:
         - name: id
           in: path
           required: true
-          description: Tag ID
+          description: TagEntity ID
           schema:
             type: integer
             format: int64
       responses:
         '204':
-          description: Tag deleted successfully
+          description: TagEntity deleted successfully
         '404':
-          description: Tag not found
+          description: TagEntity not found
 
   /api/tags/name/{name}:
     get:
@@ -614,7 +614,7 @@ paths:
         - name: name
           in: path
           required: true
-          description: Tag name
+          description: TagEntity name
           schema:
             type: string
       responses:
@@ -625,7 +625,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
         '404':
-          description: Tag not found
+          description: TagEntity not found
 
 components:
   parameters:
@@ -633,7 +633,7 @@ components:
       name: id
       in: path
       required: true
-      description: Post ID
+      description: PostEntity ID
       schema:
         type: integer
         format: int64
@@ -647,14 +647,14 @@ components:
       properties:
         title:
           type: string
-          description: The title of the post
+          description: The title of the postEntity
           example: "Introduction to Spring Boot"
         tagIds:
           type: array
           items:
             type: integer
             format: int64
-          description: Array of tag IDs to associate with the post
+          description: Array of tag IDs to associate with the postEntity
           example: [1, 2]
 
     PostResponse:
@@ -663,11 +663,11 @@ components:
         id:
           type: integer
           format: int64
-          description: Unique identifier for the post
+          description: Unique identifier for the postEntity
           example: 1
         title:
           type: string
-          description: The title of the post
+          description: The title of the postEntity
           example: "Introduction to Spring Boot"
         postDetails:
           $ref: '#/components/schemas/PostDetailsResponse'
@@ -676,21 +676,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PostCommentResponse'
-          description: List of comments for this post
+          description: List of comments for this postEntity
         tags:
           type: array
           items:
             $ref: '#/components/schemas/TagResponse'
-          description: List of tags associated with this post
+          description: List of tagEntities associated with this postEntity
         createdAt:
           type: string
           format: date-time
-          description: Timestamp when the post was created
+          description: Timestamp when the postEntity was created
           example: "2025-12-02T10:00:00"
         updatedAt:
           type: string
           format: date-time
-          description: Timestamp when the post was last updated
+          description: Timestamp when the postEntity was last updated
           example: "2025-12-02T10:00:00"
 
     PostListResponse:
@@ -720,7 +720,7 @@ components:
           example: 201
         message:
           type: string
-          example: "Post created successfully"
+          example: "PostEntity created successfully"
         success:
           type: boolean
           example: true
@@ -731,7 +731,7 @@ components:
           format: date-time
         path:
           type: string
-          example: "/api/posts"
+          example: "/api/postEntities"
 
     PostComment:
       type: object
@@ -746,14 +746,14 @@ components:
         review:
           type: string
           description: The comment/review text
-          example: "Great post!"
+          example: "Great postEntity!"
         post:
           type: object
           properties:
             id:
               type: integer
               format: int64
-          description: The post this comment belongs to
+          description: The postEntity this comment belongs to
         createdAt:
           type: string
           format: date-time
@@ -774,7 +774,7 @@ components:
           example: 1
         review:
           type: string
-          example: "Great post!"
+          example: "Great postEntity!"
         postId:
           type: integer
           format: int64
@@ -794,20 +794,20 @@ components:
         id:
           type: integer
           format: int64
-          description: Unique identifier for the post details
+          description: Unique identifier for the postEntity details
           example: 1
         description:
           type: string
-          description: Detailed description of the post
+          description: Detailed description of the postEntity
           maxLength: 5000
-          example: "This is a detailed description of the post content"
+          example: "This is a detailed description of the postEntity content"
         post:
           type: object
           properties:
             id:
               type: integer
               format: int64
-          description: The post these details belong to
+          description: The postEntity these details belong to
         createdAt:
           type: string
           format: date-time
@@ -891,7 +891,7 @@ components:
           format: date-time
         path:
           type: string
-          example: "/api/posts"
+          example: "/api/postEntities"
 
   responses:
     BadRequest:
@@ -914,9 +914,9 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             status: 404
-            message: "Post not found"
+            message: "PostEntity not found"
             success: false
-            errors: ["Post with id 1 not found"]
+            errors: ["PostEntity with id 1 not found"]
 
     InternalServerError:
       description: Internal server error

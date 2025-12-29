@@ -13,14 +13,13 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString(exclude = {"postDetails", "comments", "tags"})
+@ToString(exclude = {"postDetailsEntity", "comments", "tagEntities"})
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity(name = "Post")
+@Entity(name = "PostEntity")
 @Table(name = "post")
-public class Post extends BaseEntity {
+public class PostEntity extends BaseEntity {
 
     @NotBlank(message = "Title is required")
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
@@ -28,20 +27,20 @@ public class Post extends BaseEntity {
     private String title;
 
     @OneToOne(
-            mappedBy = "post",
+            mappedBy = "postEntity",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
-    private PostDetails postDetails;
+    private PostDetailEntity postDetailEntity;
 
     @OneToMany(
-            mappedBy = "post",
+            mappedBy = "postEntity",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @Builder.Default
-    private List<PostComment> comments = new ArrayList<>();
+    private List<PostCommentsEntity> comments = new ArrayList<>();
 
     @ManyToMany(
             cascade = {
@@ -55,61 +54,61 @@ public class Post extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     @Builder.Default
-    private Set<Tag> tags = new LinkedHashSet<>();
+    private Set<TagEntity> tagEntities = new LinkedHashSet<>();
 
-    public void addComment(PostComment comment) {
+    public void addComment(PostCommentsEntity comment) {
         if (comments == null) {
             comments = new ArrayList<>();
         }
         comments.add(comment);
-        comment.setPost(this);
+        comment.setPostEntity(this);
     }
 
-    public void removeComment(PostComment comment) {
+    public void removeComment(PostCommentsEntity comment) {
         if (comments != null) {
             comments.remove(comment);
-            comment.setPost(null);
+            comment.setPostEntity(null);
         }
     }
 
     // The addTag method is used for synchronizing the bidirectional association
-    public void addTag(Tag tag) {
-        if (tags == null) {
-            tags = new LinkedHashSet<>();
+    public void addTag(TagEntity tagEntity) {
+        if (tagEntities == null) {
+            tagEntities = new LinkedHashSet<>();
         }
-        tags.add(tag);
-        if (tag.getPosts() == null) {
-            tag.setPosts(new LinkedHashSet<>());
+        tagEntities.add(tagEntity);
+        if (tagEntity.getPostEntities() == null) {
+            tagEntity.setPostEntities(new LinkedHashSet<>());
         }
-        tag.getPosts().add(this);
+        tagEntity.getPostEntities().add(this);
     }
 
     // The removeTag method is used for synchronizing the bidirectional association
-    public void removeTag(Tag tag) {
-        if (tags != null) {
-            tags.remove(tag);
+    public void removeTag(TagEntity tagEntity) {
+        if (tagEntities != null) {
+            tagEntities.remove(tagEntity);
         }
-        if (tag.getPosts() != null) {
-            tag.getPosts().remove(this);
+        if (tagEntity.getPostEntities() != null) {
+            tagEntity.getPostEntities().remove(this);
         }
     }
 
     // The setDetails method is used for synchronizing both sides of this bidirectional association
     // And is used both for adding and removing the associated child entity.
-    public void setDetails(PostDetails postDetails) {
-        if(postDetails == null) {
-            if(this.postDetails != null) this.postDetails.setPost(null);
+    public void setDetails(PostDetailEntity postDetailsEntity) {
+        if(postDetailsEntity == null) {
+            if(this.postDetailEntity != null) this.postDetailEntity.setPostEntity(null);
         } else {
-            postDetails.setPost(this);
+            postDetailsEntity.setPostEntity(this);
         }
-        this.postDetails = postDetails;
+        this.postDetailEntity = postDetailsEntity;
     }
 
     @Override
     public boolean equals(Object o) {
         if(this == o)  return true;
-        if(!(o instanceof Post)) return false;
-        return getId() != null && getId().equals(((Post) o).getId());
+        if(!(o instanceof PostEntity)) return false;
+        return getId() != null && getId().equals(((PostEntity) o).getId());
     }
 
     @Override

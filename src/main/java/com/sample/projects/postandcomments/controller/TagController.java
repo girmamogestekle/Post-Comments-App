@@ -1,6 +1,6 @@
 package com.sample.projects.postandcomments.controller;
 
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.TagEntity;
 import com.sample.projects.postandcomments.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,38 +21,38 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<Tag> createTag(@RequestBody Tag tag) {
-        Tag createdTag = tagService.save(tag);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTag);
+    public ResponseEntity<TagEntity> createTag(@RequestBody TagEntity tagEntity) {
+        TagEntity createdTagEntity = tagService.save(tagEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTagEntity);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
+    public ResponseEntity<TagEntity> getTagById(@PathVariable Long id) {
         return tagService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Tag> getTagByName(@PathVariable String name) {
+    public ResponseEntity<TagEntity> getTagByName(@PathVariable String name) {
         return tagService.findByName(name)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<Tag>> getAllTags() {
-        List<Tag> tags = tagService.findAll();
-        return ResponseEntity.ok(tags);
+    public ResponseEntity<List<TagEntity>> getAllTags() {
+        List<TagEntity> tagEntities = tagService.findAll();
+        return ResponseEntity.ok(tagEntities);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag tag) {
+    public ResponseEntity<TagEntity> updateTag(@PathVariable Long id, @RequestBody TagEntity tagEntity) {
         if (!tagService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        Tag updatedTag = tagService.update(id, tag);
-        return ResponseEntity.ok(updatedTag);
+        TagEntity updatedTagEntity = tagService.update(id, tagEntity);
+        return ResponseEntity.ok(updatedTagEntity);
     }
 
     @DeleteMapping("/{id}")

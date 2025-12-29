@@ -2,8 +2,8 @@ package com.sample.projects.postandcomments.service.impl;
 
 import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
-import com.sample.projects.postandcomments.entity.Post;
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.PostEntity;
+import com.sample.projects.postandcomments.entity.TagEntity;
 import com.sample.projects.postandcomments.exception.ResourceNotFoundException;
 import com.sample.projects.postandcomments.exception.ValidationException;
 import com.sample.projects.postandcomments.mapper.PostMapper;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PostServiceImpl Unit Tests")
-class PostServiceImplTest {
+class PostEntityServiceImplTest {
 
     @Mock
     private PostRepository postRepository;
@@ -44,49 +44,49 @@ class PostServiceImplTest {
     private PostServiceImpl postService;
 
     private PostRequest postRequest;
-    private Post post;
+    private PostEntity postEntity;
     private PostResponse postResponse;
-    private Tag tag;
+    private TagEntity tagEntity;
 
     @BeforeEach
     void setUp() {
         postRequest = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of(1L, 2L))
                 .build();
 
-        tag = Tag.builder()
+        tagEntity = TagEntity.builder()
                 .id(1L)
                 .name("Spring Boot")
                 .build();
 
-        post = Post.builder()
+        postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .tags(new LinkedHashSet<>())
+                .tagEntities(new LinkedHashSet<>())
                 .build();
 
         postResponse = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
 
     @Test
-    @DisplayName("save - Should save post successfully without tags")
+    @DisplayName("save - Should save postEntity successfully without tagEntities")
     void testSave_WithoutTags() {
         // Given
         PostRequest requestWithoutTags = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .build();
 
-        when(postMapper.toEntity(requestWithoutTags)).thenReturn(post);
-        when(postRepository.save(any(Post.class))).thenReturn(post);
-        when(postMapper.toResponse(post)).thenReturn(postResponse);
+        when(postMapper.toEntity(requestWithoutTags)).thenReturn(postEntity);
+        when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
+        when(postMapper.toPostResponse(postEntity)).thenReturn(postResponse);
 
         // When
         PostResponse result = postService.save(requestWithoutTags);
@@ -94,27 +94,27 @@ class PostServiceImplTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("Test Post");
+        assertThat(result.getTitle()).isEqualTo("Test PostEntity");
         verify(postMapper).toEntity(requestWithoutTags);
-        verify(postRepository).save(any(Post.class));
-        verify(postMapper).toResponse(post);
+        verify(postRepository).save(any(PostEntity.class));
+        verify(postMapper).toPostResponse(postEntity);
         verify(tagService, never()).findById(anyLong());
     }
 
     @Test
-    @DisplayName("save - Should save post successfully with tags")
+    @DisplayName("save - Should save postEntity successfully with tagEntities")
     void testSave_WithTags() {
         // Given
-        Tag tag2 = Tag.builder()
+        TagEntity tagEntity2 = TagEntity.builder()
                 .id(2L)
                 .name("Java")
                 .build();
 
-        when(postMapper.toEntity(postRequest)).thenReturn(post);
-        when(tagService.findById(1L)).thenReturn(Optional.of(tag));
-        when(tagService.findById(2L)).thenReturn(Optional.of(tag2));
-        when(postRepository.save(any(Post.class))).thenReturn(post);
-        when(postMapper.toResponse(post)).thenReturn(postResponse);
+        when(postMapper.toEntity(postRequest)).thenReturn(postEntity);
+        when(tagService.findById(1L)).thenReturn(Optional.of(tagEntity));
+        when(tagService.findById(2L)).thenReturn(Optional.of(tagEntity2));
+        when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
+        when(postMapper.toPostResponse(postEntity)).thenReturn(postResponse);
 
         // When
         PostResponse result = postService.save(postRequest);
@@ -125,16 +125,16 @@ class PostServiceImplTest {
         // tagService.findById is called twice: once in validateTagIds() and once in the stream
         verify(tagService, times(2)).findById(1L);
         verify(tagService, times(2)).findById(2L);
-        verify(postRepository).save(any(Post.class));
-        verify(postMapper).toResponse(post);
+        verify(postRepository).save(any(PostEntity.class));
+        verify(postMapper).toPostResponse(postEntity);
     }
 
     @Test
-    @DisplayName("save - Should throw ValidationException when tag not found")
+    @DisplayName("save - Should throw ValidationException when tagEntity not found")
     void testSave_WithNonExistentTags() {
         // Given
         PostRequest requestWithInvalidTags = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of(999L))
                 .build();
 
@@ -147,15 +147,15 @@ class PostServiceImplTest {
 
         verify(tagService).findById(999L);
         verify(postMapper, never()).toEntity(any(PostRequest.class));
-        verify(postRepository, never()).save(any(Post.class));
+        verify(postRepository, never()).save(any(PostEntity.class));
     }
 
     @Test
-    @DisplayName("findById - Should return post when exists")
+    @DisplayName("findById - Should return postEntity when exists")
     void testFindById_Exists() {
         // Given
-        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
-        when(postMapper.toResponse(post)).thenReturn(postResponse);
+        when(postRepository.findById(1L)).thenReturn(Optional.of(postEntity));
+        when(postMapper.toPostResponse(postEntity)).thenReturn(postResponse);
 
         // When
         Optional<PostResponse> result = postService.findById(1L);
@@ -164,11 +164,11 @@ class PostServiceImplTest {
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(1L);
         verify(postRepository).findById(1L);
-        verify(postMapper).toResponse(post);
+        verify(postMapper).toPostResponse(postEntity);
     }
 
     @Test
-    @DisplayName("findById - Should return empty when post not exists")
+    @DisplayName("findById - Should return empty when postEntity not exists")
     void testFindById_NotExists() {
         // Given
         when(postRepository.findById(999L)).thenReturn(Optional.empty());
@@ -179,28 +179,28 @@ class PostServiceImplTest {
         // Then
         assertThat(result).isEmpty();
         verify(postRepository).findById(999L);
-        verify(postMapper, never()).toResponse(any(Post.class));
+        verify(postMapper, never()).toPostResponse(any(PostEntity.class));
     }
 
     @Test
-    @DisplayName("findAll - Should return all posts")
+    @DisplayName("findAll - Should return all postEntities")
     void testFindAll() {
         // Given
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(2L)
-                .title("Second Post")
+                .title("Second PostEntity")
                 .build();
 
         PostResponse response2 = PostResponse.builder()
                 .id(2L)
-                .title("Second Post")
+                .title("Second PostEntity")
                 .build();
 
-        List<Post> posts = Arrays.asList(post, post2);
+        List<PostEntity> postEntities = Arrays.asList(postEntity, postEntity2);
         List<PostResponse> responses = Arrays.asList(postResponse, response2);
 
-        when(postRepository.findAll()).thenReturn(posts);
-        when(postMapper.toResponseList(posts)).thenReturn(responses);
+        when(postRepository.findAll()).thenReturn(postEntities);
+        when(postMapper.toResponseList(postEntities)).thenReturn(responses);
 
         // When
         List<PostResponse> result = postService.findAll();
@@ -210,28 +210,28 @@ class PostServiceImplTest {
         assertThat(result.get(0).getId()).isEqualTo(1L);
         assertThat(result.get(1).getId()).isEqualTo(2L);
         verify(postRepository).findAll();
-        verify(postMapper).toResponseList(posts);
+        verify(postMapper).toResponseList(postEntities);
     }
 
     @Test
-    @DisplayName("update - Should update post successfully")
+    @DisplayName("update - Should update postEntity successfully")
     void testUpdate_Success() {
         // Given
         PostRequest updateRequest = PostRequest.builder()
                 .title("Updated Title")
                 .build();
 
-        Post existingPost = Post.builder()
+        PostEntity existingPostEntity = PostEntity.builder()
                 .id(1L)
                 .title("Original Title")
                 .createdAt(LocalDateTime.now().minusDays(1))
                 .updatedAt(LocalDateTime.now().minusDays(1))
                 .build();
 
-        Post updatedPost = Post.builder()
+        PostEntity updatedPostEntity = PostEntity.builder()
                 .id(1L)
                 .title("Updated Title")
-                .createdAt(existingPost.getCreatedAt())
+                .createdAt(existingPostEntity.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
@@ -240,9 +240,9 @@ class PostServiceImplTest {
                 .title("Updated Title")
                 .build();
 
-        when(postRepository.findById(1L)).thenReturn(Optional.of(existingPost));
-        when(postRepository.save(any(Post.class))).thenReturn(updatedPost);
-        when(postMapper.toResponse(updatedPost)).thenReturn(updatedResponse);
+        when(postRepository.findById(1L)).thenReturn(Optional.of(existingPostEntity));
+        when(postRepository.save(any(PostEntity.class))).thenReturn(updatedPostEntity);
+        when(postMapper.toPostResponse(updatedPostEntity)).thenReturn(updatedResponse);
 
         // When
         PostResponse result = postService.update(1L, updateRequest);
@@ -251,12 +251,12 @@ class PostServiceImplTest {
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo("Updated Title");
         verify(postRepository).findById(1L);
-        verify(postRepository).save(any(Post.class));
-        verify(postMapper).toResponse(updatedPost);
+        verify(postRepository).save(any(PostEntity.class));
+        verify(postMapper).toPostResponse(updatedPostEntity);
     }
 
     @Test
-    @DisplayName("update - Should throw exception when post not found")
+    @DisplayName("update - Should throw exception when postEntity not found")
     void testUpdate_NotFound() {
         // Given
         PostRequest updateRequest = PostRequest.builder()
@@ -268,14 +268,14 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.update(999L, updateRequest))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Post with id 999 not found");
+                .hasMessageContaining("PostEntity with id 999 not found");
 
         verify(postRepository).findById(999L);
-        verify(postRepository, never()).save(any(Post.class));
+        verify(postRepository, never()).save(any(PostEntity.class));
     }
 
     @Test
-    @DisplayName("update - Should update tags when provided")
+    @DisplayName("update - Should update tagEntities when provided")
     void testUpdate_WithTags() {
         // Given
         PostRequest updateRequest = PostRequest.builder()
@@ -283,18 +283,18 @@ class PostServiceImplTest {
                 .tagIds(Set.of(1L))
                 .build();
 
-        Tag tag1 = Tag.builder().id(1L).name("Tag1").build();
+        TagEntity tagEntity1 = TagEntity.builder().id(1L).name("Tag1").build();
 
-        Post existingPost = Post.builder()
+        PostEntity existingPostEntity = PostEntity.builder()
                 .id(1L)
                 .title("Original Title")
-                .tags(new LinkedHashSet<>())
+                .tagEntities(new LinkedHashSet<>())
                 .build();
 
-        when(postRepository.findById(1L)).thenReturn(Optional.of(existingPost));
-        when(tagService.findById(1L)).thenReturn(Optional.of(tag1));
-        when(postRepository.save(any(Post.class))).thenReturn(existingPost);
-        when(postMapper.toResponse(existingPost)).thenReturn(postResponse);
+        when(postRepository.findById(1L)).thenReturn(Optional.of(existingPostEntity));
+        when(tagService.findById(1L)).thenReturn(Optional.of(tagEntity1));
+        when(postRepository.save(any(PostEntity.class))).thenReturn(existingPostEntity);
+        when(postMapper.toPostResponse(existingPostEntity)).thenReturn(postResponse);
 
         // When
         PostResponse result = postService.update(1L, updateRequest);
@@ -303,11 +303,11 @@ class PostServiceImplTest {
         assertThat(result).isNotNull();
         // tagService.findById is called twice: once in validateTagIds() and once in the stream
         verify(tagService, times(2)).findById(1L);
-        verify(postRepository).save(any(Post.class));
+        verify(postRepository).save(any(PostEntity.class));
     }
 
     @Test
-    @DisplayName("deleteById - Should delete post successfully")
+    @DisplayName("deleteById - Should delete postEntity successfully")
     void testDeleteById_Success() {
         // Given
         when(postRepository.existsById(1L)).thenReturn(true);
@@ -322,7 +322,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("deleteById - Should throw exception when post not found")
+    @DisplayName("deleteById - Should throw exception when postEntity not found")
     void testDeleteById_NotFound() {
         // Given
         when(postRepository.existsById(999L)).thenReturn(false);
@@ -330,14 +330,14 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.deleteById(999L))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Post with id 999 not found");
+                .hasMessageContaining("PostEntity with id 999 not found");
 
         verify(postRepository).existsById(999L);
         verify(postRepository, never()).deleteById(anyLong());
     }
 
     @Test
-    @DisplayName("existsById - Should return true when post exists")
+    @DisplayName("existsById - Should return true when postEntity exists")
     void testExistsById_Exists() {
         // Given
         when(postRepository.existsById(1L)).thenReturn(true);
@@ -351,7 +351,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("existsById - Should return false when post not exists")
+    @DisplayName("existsById - Should return false when postEntity not exists")
     void testExistsById_NotExists() {
         // Given
         when(postRepository.existsById(999L)).thenReturn(false);
@@ -370,7 +370,7 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.findById(null))
                 .isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Post id cannot be null");
+                .hasMessageContaining("PostEntity id cannot be null");
     }
 
     @Test
@@ -384,7 +384,7 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.update(null, updateRequest))
                 .isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Post id cannot be null");
+                .hasMessageContaining("PostEntity id cannot be null");
     }
 
     @Test
@@ -393,7 +393,7 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.deleteById(null))
                 .isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Post id cannot be null");
+                .hasMessageContaining("PostEntity id cannot be null");
     }
 
     @Test
@@ -402,11 +402,11 @@ class PostServiceImplTest {
         // When/Then
         assertThatThrownBy(() -> postService.existsById(null))
                 .isInstanceOf(ValidationException.class)
-                .hasMessageContaining("Post id cannot be null");
+                .hasMessageContaining("PostEntity id cannot be null");
     }
 
     @Test
-    @DisplayName("save - Should throw ValidationException when tag id is null")
+    @DisplayName("save - Should throw ValidationException when tagEntity id is null")
     void testSave_WithNullTagId() {
         // Given
         Set<Long> tagIdsWithNull = new HashSet<>();
@@ -414,7 +414,7 @@ class PostServiceImplTest {
         tagIdsWithNull.add(null);
         
         PostRequest requestWithNullTagId = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(tagIdsWithNull)
                 .build();
 
@@ -425,11 +425,11 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("save - Should throw ValidationException when tag id is invalid")
+    @DisplayName("save - Should throw ValidationException when tagEntity id is invalid")
     void testSave_WithInvalidTagId() {
         // Given
         PostRequest requestWithInvalidTagId = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of(0L, -1L))
                 .build();
 
@@ -440,11 +440,11 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("save - Should throw ValidationException when tag not found")
+    @DisplayName("save - Should throw ValidationException when tagEntity not found")
     void testSave_WithNonExistentTag() {
         // Given
         PostRequest requestWithNonExistentTag = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of(999L))
                 .build();
 
@@ -457,7 +457,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("update - Should throw ValidationException when tag id is invalid")
+    @DisplayName("update - Should throw ValidationException when tagEntity id is invalid")
     void testUpdate_WithInvalidTagId() {
         // Given
         PostRequest updateRequest = PostRequest.builder()
@@ -472,6 +472,6 @@ class PostServiceImplTest {
                 .hasMessageContaining("Invalid tag ids provided");
 
         verify(postRepository, never()).findById(anyLong());
-        verify(postRepository, never()).save(any(Post.class));
+        verify(postRepository, never()).save(any(PostEntity.class));
     }
 }

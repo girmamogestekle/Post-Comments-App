@@ -20,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping(name  = "Post Controller", value = "/api/v1/post")
 public class PostController {
 
     private final PostService postService;
@@ -33,14 +33,14 @@ public class PostController {
         this.aiService = aiService;
     }
 
-    @PostMapping
+    @PostMapping(name = "Create Post", value = "/create")
     public ResponseEntity<CommonResponse<PostResponse>> createPost(
             @Valid @RequestBody PostRequest request,
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
-        log.info("Creating new post with title: {}, includeAi: {}", request.getTitle(), includeAi);
+        log.info("Creating new postEntity with title: {}, includeAi: {}", request.getTitle(), includeAi);
         PostResponse createdPost = postService.save(request);
-        log.debug("Post created successfully with id: {}", createdPost.getId());
+        log.debug("PostEntity created successfully with id: {}", createdPost.getId());
 
         CommonResponse<PostResponse> response;
 
@@ -56,18 +56,18 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(name = "Get Post", value = "/get/{id}")
     public ResponseEntity<CommonResponse<PostResponse>> getPostById(
             @PathVariable Long id,
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             HttpServletRequest httpRequest) {
-        log.info("Retrieving post by id: {}, includeAi: {}", id, includeAi);
+        log.info("Retrieving postEntity by id: {}, includeAi: {}", id, includeAi);
         PostResponse post = postService.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("Post not found with id: {}", id);
-                    return new ResourceNotFoundException("Post", id);
+                    log.warn("PostEntity not found with id: {}", id);
+                    return new ResourceNotFoundException("PostEntity", id);
                 });
-        log.debug("Post retrieved successfully with id: {}", id);
+        log.debug("PostEntity retrieved successfully with id: {}", id);
         
         CommonResponse<PostResponse> response;
         if(includeAi){
@@ -80,25 +80,25 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping(name = "Get Posts", value = "/get/all")
     public ResponseEntity<CommonResponse<List<PostResponse>>> getAllPosts(HttpServletRequest httpRequest) {
-        log.info("Retrieving all posts");
+        log.info("Retrieving all postEntities");
         List<PostResponse> posts = postService.findAll();
-        log.debug("Retrieved {} posts", posts.size());
+        log.debug("Retrieved {} postEntities", posts.size());
         CommonResponse<List<PostResponse>> response = ResponseUtil.buildSuccessResponse(
                 HttpStatus.OK, Constants.POST_RETRIEVED_SUCCESSFULLY, posts, httpRequest);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(name = "Update Post", value = "/update/{id}")
     public ResponseEntity<CommonResponse<PostResponse>> updatePost(
             @PathVariable Long id,
             @RequestParam(name = "includeAi", defaultValue = "false") boolean includeAi,
             @Valid @RequestBody PostRequest request,
             HttpServletRequest httpRequest) {
-        log.info("Updating post with id: {}, includeAi: {}", id, includeAi);
+        log.info("Updating postEntity with id: {}, includeAi: {}", id, includeAi);
         PostResponse updatedPost = postService.update(id, request);
-        log.debug("Post updated successfully with id: {}", id);
+        log.debug("PostEntity updated successfully with id: {}", id);
 
         CommonResponse<PostResponse> response;
         if(includeAi){
@@ -112,15 +112,15 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(name = "Delete Post", value = "/delete/{id}")
     public ResponseEntity<CommonResponse<Object>> deletePost(
             @PathVariable Long id,
             HttpServletRequest httpRequest) {
-        log.info("Deleting post with id: {}", id);
+        log.info("Deleting postEntity with id: {}", id);
         postService.deleteById(id);
-        log.debug("Post deleted successfully with id: {}", id);
+        log.debug("PostEntity deleted successfully with id: {}", id);
         CommonResponse<Object> response = ResponseUtil.buildSuccessResponse(
-                HttpStatus.NO_CONTENT, "Post deleted successfully", null, httpRequest);
+                HttpStatus.NO_CONTENT, "PostEntity deleted successfully", null, httpRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
 }

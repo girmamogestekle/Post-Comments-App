@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("test")
 @Import(TestAiConfig.class)
-class PostAndCommentsApplicationTests {
+class PostEntityAndCommentsApplicationTests {
 
     @Test
     void contextLoads() {

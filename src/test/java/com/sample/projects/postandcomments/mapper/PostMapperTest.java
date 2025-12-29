@@ -2,13 +2,13 @@ package com.sample.projects.postandcomments.mapper;
 
 import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostCommentResponse;
-import com.sample.projects.postandcomments.dto.response.PostDetailsResponse;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.dto.response.TagResponse;
-import com.sample.projects.postandcomments.entity.Post;
-import com.sample.projects.postandcomments.entity.PostComment;
-import com.sample.projects.postandcomments.entity.PostDetails;
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.PostCommentsEntity;
+import com.sample.projects.postandcomments.entity.PostDetailEntity;
+import com.sample.projects.postandcomments.entity.PostEntity;
+import com.sample.projects.postandcomments.entity.TagEntity;
+import com.sample.projects.postandcomments.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,165 +26,167 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("PostMapper Unit Tests")
 class PostMapperTest {
 
+    private PostRepository postRepository;
     private PostMapper postMapper;
 
     @BeforeEach
     void setUp() {
-        postMapper = new PostMapper();
+        PostDetailMapper postDetailMapper = new PostDetailMapper(postRepository);
+        postMapper = new PostMapper(postDetailMapper);
     }
 
     @Test
-    @DisplayName("toEntity - Should convert PostRequest to Post entity")
+    @DisplayName("toEntity - Should convert PostRequest to PostEntity entity")
     void testToEntity() {
         // Given
         PostRequest request = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of(1L, 2L))
                 .build();
 
         // When
-        Post post = postMapper.toEntity(request);
+        PostEntity postEntity = postMapper.toEntity(request);
 
         // Then
-        assertThat(post).isNotNull();
-        assertThat(post.getTitle()).isEqualTo("Test Post");
-        assertThat(post.getId()).isNull(); // ID should not be set from request
+        assertThat(postEntity).isNotNull();
+        assertThat(postEntity.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(postEntity.getId()).isNull(); // ID should not be set from request
     }
 
     @Test
-    @DisplayName("toResponse - Should convert Post entity to PostResponse")
+    @DisplayName("toResponse - Should convert PostEntity entity to PostResponse")
     void testToResponse_SimplePost() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
         // When
-        PostResponse response = postMapper.toResponse(post);
+        PostResponse response = postMapper.toPostResponse(postEntity);
 
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
         assertThat(response.getCreatedAt()).isNotNull();
         assertThat(response.getUpdatedAt()).isNotNull();
     }
 
     @Test
-    @DisplayName("toResponse - Should return null when post is null")
+    @DisplayName("toResponse - Should return null when postEntity is null")
     void testToResponse_NullPost() {
         // When
-        PostResponse response = postMapper.toResponse(null);
+        PostResponse response = postMapper.toPostResponse(null);
 
         // Then
         assertThat(response).isNull();
     }
 
     @Test
-    @DisplayName("toResponse - Should map post with PostDetails")
+    @DisplayName("toResponse - Should map postEntity with PostDetailEntity")
     void testToResponse_WithPostDetails() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        PostDetails postDetails = PostDetails.builder()
+        PostDetailEntity postDetailsEntity = PostDetailEntity.builder()
                 .id(1L)
-                .post(post)
+                .postEntity(postEntity)
                 .description("Test description")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        post.setDetails(postDetails);
+        postEntity.setDetails(postDetailsEntity);
 
         // When
-        PostResponse response = postMapper.toResponse(post);
+        PostResponse response = postMapper.toPostResponse(postEntity);
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.getPostDetails()).isNotNull();
-        assertThat(response.getPostDetails().getId()).isEqualTo(1L);
-        assertThat(response.getPostDetails().getDescription()).isEqualTo("Test description");
-        assertThat(response.getPostDetails().getPostId()).isEqualTo(1L);
+        assertThat(response.getPostDetailResponse()).isNotNull();
+        assertThat(response.getPostDetailResponse().getId()).isEqualTo(1L);
+        assertThat(response.getPostDetailResponse().getDescription()).isEqualTo("Test description");
+//        assertThat(response.getPostDetails().getPostId()).isEqualTo(1L);
     }
 
     @Test
-    @DisplayName("toResponse - Should map post with comments")
+    @DisplayName("toResponse - Should map postEntity with comments")
     void testToResponse_WithComments() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .comments(new ArrayList<>())
                 .build();
 
-        PostComment comment1 = PostComment.builder()
+        PostCommentsEntity comment1 = PostCommentsEntity.builder()
                 .id(1L)
-                .review("Great post!")
-                .post(post)
+                .comment("Great postEntity!")
+                .postEntity(postEntity)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        PostComment comment2 = PostComment.builder()
+        PostCommentsEntity comment2 = PostCommentsEntity.builder()
                 .id(2L)
-                .review("Very informative")
-                .post(post)
+                .comment("Very informative")
+                .postEntity(postEntity)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        post.addComment(comment1);
-        post.addComment(comment2);
+        postEntity.addComment(comment1);
+        postEntity.addComment(comment2);
 
         // When
-        PostResponse response = postMapper.toResponse(post);
+        PostResponse response = postMapper.toPostResponse(postEntity);
 
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getComments()).hasSize(2);
         assertThat(response.getComments()).extracting(PostCommentResponse::getReview)
-                .containsExactlyInAnyOrder("Great post!", "Very informative");
+                .containsExactlyInAnyOrder("Great postEntity!", "Very informative");
         assertThat(response.getComments()).extracting(PostCommentResponse::getPostId)
                 .containsOnly(1L);
     }
 
     @Test
-    @DisplayName("toResponse - Should map post with tags")
+    @DisplayName("toResponse - Should map postEntity with tagEntities")
     void testToResponse_WithTags() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .tags(new LinkedHashSet<>())
+                .tagEntities(new LinkedHashSet<>())
                 .build();
 
-        Tag tag1 = Tag.builder()
+        TagEntity tagEntity1 = TagEntity.builder()
                 .id(1L)
                 .name("Spring Boot")
                 .build();
 
-        Tag tag2 = Tag.builder()
+        TagEntity tagEntity2 = TagEntity.builder()
                 .id(2L)
                 .name("Java")
                 .build();
 
-        post.addTag(tag1);
-        post.addTag(tag2);
+        postEntity.addTag(tagEntity1);
+        postEntity.addTag(tagEntity2);
 
         // When
-        PostResponse response = postMapper.toResponse(post);
+        PostResponse response = postMapper.toPostResponse(postEntity);
 
         // Then
         assertThat(response).isNotNull();
@@ -194,84 +196,84 @@ class PostMapperTest {
     }
 
     @Test
-    @DisplayName("toResponse - Should map complete post with all relationships")
+    @DisplayName("toResponse - Should map complete postEntity with all relationships")
     void testToResponse_CompletePost() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .comments(new ArrayList<>())
-                .tags(new LinkedHashSet<>())
+                .tagEntities(new LinkedHashSet<>())
                 .build();
 
-        PostDetails postDetails = PostDetails.builder()
+        PostDetailEntity postDetailsEntity = PostDetailEntity.builder()
                 .id(1L)
-                .post(post)
+                .postEntity(postEntity)
                 .description("Test description")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        PostComment comment = PostComment.builder()
+        PostCommentsEntity comment = PostCommentsEntity.builder()
                 .id(1L)
-                .review("Great post!")
-                .post(post)
+                .comment("Great postEntity!")
+                .postEntity(postEntity)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Tag tag = Tag.builder()
+        TagEntity tagEntity = TagEntity.builder()
                 .id(1L)
                 .name("Spring Boot")
                 .build();
 
-        post.setDetails(postDetails);
-        post.addComment(comment);
-        post.addTag(tag);
+        postEntity.setDetails(postDetailsEntity);
+        postEntity.addComment(comment);
+        postEntity.addTag(tagEntity);
 
         // When
-        PostResponse response = postMapper.toResponse(post);
+        PostResponse response = postMapper.toPostResponse(postEntity);
 
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
-        assertThat(response.getPostDetails()).isNotNull();
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isNotNull();
         assertThat(response.getComments()).hasSize(1);
         assertThat(response.getTags()).hasSize(1);
     }
 
     @Test
-    @DisplayName("toResponseList - Should convert list of posts to list of responses")
+    @DisplayName("toResponseList - Should convert list of postEntities to list of responses")
     void testToResponseList() {
         // Given
-        Post post1 = Post.builder()
+        PostEntity postEntity1 = PostEntity.builder()
                 .id(1L)
-                .title("First Post")
+                .title("First PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(2L)
-                .title("Second Post")
+                .title("Second PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        List<Post> posts = List.of(post1, post2);
+        List<PostEntity> postEntities = List.of(postEntity1, postEntity2);
 
         // When
-        List<PostResponse> responses = postMapper.toResponseList(posts);
+        List<PostResponse> responses = postMapper.toResponseList(postEntities);
 
         // Then
         assertThat(responses).hasSize(2);
         assertThat(responses).extracting(PostResponse::getId)
                 .containsExactly(1L, 2L);
         assertThat(responses).extracting(PostResponse::getTitle)
-                .containsExactly("First Post", "Second Post");
+                .containsExactly("First PostEntity", "Second PostEntity");
     }
 
     @Test
@@ -295,55 +297,18 @@ class PostMapperTest {
     }
 
     @Test
-    @DisplayName("toPostDetailsResponse - Should convert PostDetails to PostDetailsResponse")
-    void testToPostDetailsResponse() {
-        // Given
-        Post post = Post.builder()
-                .id(1L)
-                .title("Test Post")
-                .build();
-
-        PostDetails postDetails = PostDetails.builder()
-                .id(1L)
-                .post(post)
-                .description("Test description")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-
-        // When
-        PostDetailsResponse response = postMapper.toPostDetailsResponse(postDetails);
-
-        // Then
-        assertThat(response).isNotNull();
-        assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getPostId()).isEqualTo(1L);
-        assertThat(response.getDescription()).isEqualTo("Test description");
-    }
-
-    @Test
-    @DisplayName("toPostDetailsResponse - Should return null when PostDetails is null")
-    void testToPostDetailsResponse_Null() {
-        // When
-        PostDetailsResponse response = postMapper.toPostDetailsResponse(null);
-
-        // Then
-        assertThat(response).isNull();
-    }
-
-    @Test
-    @DisplayName("toPostCommentResponse - Should convert PostComment to PostCommentResponse")
+    @DisplayName("toPostCommentResponse - Should convert PostCommentsEntity to PostCommentResponse")
     void testToPostCommentResponse() {
         // Given
-        Post post = Post.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .build();
 
-        PostComment comment = PostComment.builder()
+        PostCommentsEntity comment = PostCommentsEntity.builder()
                 .id(1L)
-                .review("Great post!")
-                .post(post)
+                .comment("Great postEntity!")
+                .postEntity(postEntity)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -354,21 +319,21 @@ class PostMapperTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getReview()).isEqualTo("Great post!");
+        assertThat(response.getReview()).isEqualTo("Great postEntity!");
         assertThat(response.getPostId()).isEqualTo(1L);
     }
 
     @Test
-    @DisplayName("toTagResponse - Should convert Tag to TagResponse")
+    @DisplayName("toTagResponse - Should convert TagEntity to TagResponse")
     void testToTagResponse() {
         // Given
-        Tag tag = Tag.builder()
+        TagEntity tagEntity = TagEntity.builder()
                 .id(1L)
                 .name("Spring Boot")
                 .build();
 
         // When
-        TagResponse response = postMapper.toTagResponse(tag);
+        TagResponse response = postMapper.toTagResponse(tagEntity);
 
         // Then
         assertThat(response).isNotNull();

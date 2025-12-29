@@ -1,6 +1,5 @@
 package com.sample.projects.postandcomments.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCommentRequest {
+public class PostDetailRequest {
     
-    @NotBlank(message = "Review is required")
-    private String review;
-    
-    @NotNull(message = "PostEntity ID is required")
+    @NotNull(message = "Post Is Required")
     private Long postId;
+
+    @NotNull(message = "Description Is Required")
+    private String description;
 }
 

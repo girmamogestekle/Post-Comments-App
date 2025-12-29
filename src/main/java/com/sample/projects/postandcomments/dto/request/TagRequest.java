@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TagRequest {
     
-    @NotBlank(message = "Tag name is required")
+    @NotBlank(message = "TagEntity name is required")
     private String name;
 }
 

@@ -9,10 +9,10 @@ on:
   workflow_dispatch:
 
 env:
-  APP_NAME: post-comments-app
-  DOCKER_HUB_REPOSITORY: ${{ secrets.DOCKERHUB_USERNAME }}/post-comments-app
+  APP_NAME: postEntity-comments-app
+  DOCKER_HUB_REPOSITORY: ${{ secrets.DOCKERHUB_USERNAME }}/postEntity-comments-app
   ECR_REGION: us-east-2                    # <-- change to your AWS region
-  ECR_REPOSITORY: post-comments-app        # <-- change to your ECR repo name
+  ECR_REPOSITORY: postEntity-comments-app        # <-- change to your ECR repo name
 
 jobs:
   # ============================
@@ -124,7 +124,7 @@ jobs:
         run: |
           docker pull ${{ env.DOCKER_HUB_REPOSITORY }}:latest
 
-      - name: Tag image for ECR
+      - name: TagEntity image for ECR
         run: |
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           docker tag ${{ env.DOCKER_HUB_REPOSITORY }}:latest $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest

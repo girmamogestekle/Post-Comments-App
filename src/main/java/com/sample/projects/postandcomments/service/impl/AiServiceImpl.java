@@ -22,7 +22,7 @@ public class AiServiceImpl implements AiService {
                 .user("""
                         You are an assistant for a Posts & Comments API.
                         
-                        Explain this blog/post in simple, clear language (3–5 sentences).
+                        Explain this blog/postEntity in simple, clear language (3–5 sentences).
                         Focus on the main idea, audience, and tone.
 
                         Title: %s
@@ -31,7 +31,7 @@ public class AiServiceImpl implements AiService {
                 .content();
 
         return AiResponse.builder()
-                .resourceType("Post")
+                .resourceType("PostEntity")
                 .resourceId(postResponse.getId())
                 .title(postResponse.getTitle())
                 .explanation(explanation)

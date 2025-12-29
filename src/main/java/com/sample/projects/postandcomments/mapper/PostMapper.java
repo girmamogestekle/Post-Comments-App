@@ -2,13 +2,11 @@ package com.sample.projects.postandcomments.mapper;
 
 import com.sample.projects.postandcomments.dto.request.PostRequest;
 import com.sample.projects.postandcomments.dto.response.PostCommentResponse;
-import com.sample.projects.postandcomments.dto.response.PostDetailsResponse;
 import com.sample.projects.postandcomments.dto.response.PostResponse;
 import com.sample.projects.postandcomments.dto.response.TagResponse;
-import com.sample.projects.postandcomments.entity.Post;
-import com.sample.projects.postandcomments.entity.PostComment;
-import com.sample.projects.postandcomments.entity.PostDetails;
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.PostCommentsEntity;
+import com.sample.projects.postandcomments.entity.PostEntity;
+import com.sample.projects.postandcomments.entity.TagEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,38 +15,44 @@ import java.util.stream.Collectors;
 @Component
 public class PostMapper {
 
-    public Post toEntity(PostRequest request) {
-        return Post.builder()
+    private final PostDetailMapper postDetailMapper;
+
+    public PostMapper(PostDetailMapper postDetailMapper){
+        this.postDetailMapper = postDetailMapper;
+    }
+
+    public PostEntity toEntity(PostRequest request) {
+        return PostEntity.builder()
                 .title(request.getTitle())
                 .build();
     }
 
-    public PostResponse toResponse(Post post) {
-        if (post == null) {
+    public PostResponse toPostResponse(PostEntity postEntity) {
+        if (postEntity == null) {
             return null;
         }
 
         PostResponse.PostResponseBuilder builder = PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt());
+                .id(postEntity.getId())
+                .title(postEntity.getTitle())
+                .createdAt(postEntity.getCreatedAt())
+                .updatedAt(postEntity.getUpdatedAt());
 
-        // Map post details
-        if (post.getPostDetails() != null) {
-            builder.postDetails(toPostDetailsResponse(post.getPostDetails()));
+        // Map postEntity details
+        if (postEntity.getPostDetailEntity() != null) {
+            builder.postDetailResponse(postDetailMapper.toPostDetailResponse(postEntity.getPostDetailEntity()));
         }
 
         // Map comments
-        if (post.getComments() != null && !post.getComments().isEmpty()) {
-            builder.comments(post.getComments().stream()
+        if (postEntity.getComments() != null && !postEntity.getComments().isEmpty()) {
+            builder.comments(postEntity.getComments().stream()
                     .map(this::toPostCommentResponse)
                     .collect(Collectors.toList()));
         }
 
-        // Map tags
-        if (post.getTags() != null && !post.getTags().isEmpty()) {
-            builder.tags(post.getTags().stream()
+        // Map tagEntities
+        if (postEntity.getTagEntities() != null && !postEntity.getTagEntities().isEmpty()) {
+            builder.tags(postEntity.getTagEntities().stream()
                     .map(this::toTagResponse)
                     .collect(Collectors.toSet()));
         }
@@ -56,52 +60,38 @@ public class PostMapper {
         return builder.build();
     }
 
-    public PostDetailsResponse toPostDetailsResponse(PostDetails postDetails) {
-        if (postDetails == null) {
-            return null;
-        }
-
-        return PostDetailsResponse.builder()
-                .id(postDetails.getId())
-                .postId(postDetails.getPost() != null ? postDetails.getPost().getId() : null)
-                .description(postDetails.getDescription())
-                .createdAt(postDetails.getCreatedAt())
-                .updatedAt(postDetails.getUpdatedAt())
-                .build();
-    }
-
-    public PostCommentResponse toPostCommentResponse(PostComment comment) {
+    public PostCommentResponse toPostCommentResponse(PostCommentsEntity comment) {
         if (comment == null) {
             return null;
         }
 
         return PostCommentResponse.builder()
                 .id(comment.getId())
-                .review(comment.getReview())
-                .postId(comment.getPost() != null ? comment.getPost().getId() : null)
+                .review(comment.getComment())
+                .postId(comment.getPostEntity() != null ? comment.getPostEntity().getId() : null)
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 
-    public TagResponse toTagResponse(Tag tag) {
-        if (tag == null) {
+    public TagResponse toTagResponse(TagEntity tagEntity) {
+        if (tagEntity == null) {
             return null;
         }
 
         return TagResponse.builder()
-                .id(tag.getId())
-                .name(tag.getName())
+                .id(tagEntity.getId())
+                .name(tagEntity.getName())
                 .build();
     }
 
-    public List<PostResponse> toResponseList(List<Post> posts) {
-        if (posts == null) {
+    public List<PostResponse> toResponseList(List<PostEntity> postEntities) {
+        if (postEntities == null) {
             return List.of();
         }
 
-        return posts.stream()
-                .map(this::toResponse)
+        return postEntities.stream()
+                .map(this::toPostResponse)
                 .toList();
     }
 }

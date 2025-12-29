@@ -17,6 +17,6 @@ public class AiResponse {
     private Long resourceId;
     private String title;              // or name/subject
     private String explanation;        // main AI text
-    private List<String> suggestedTags; // optional: AI-generated tags/keywords
+    private List<String> suggestedTags; // optional: AI-generated tagEntities/keywords
 
 }

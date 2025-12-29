@@ -40,7 +40,7 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Health check (optional - can be removed if actuator is not configured)
 # HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-#   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/posts || exit 1
+#   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/postEntities || exit 1
 
 # Run the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

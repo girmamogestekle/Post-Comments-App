@@ -19,56 +19,56 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@DisplayName("Post Entity Tests")
+@DisplayName("PostEntity Entity Tests")
 @Import(TestJpaAuditingConfig.class)
 class PostEntityTest {
 
-    private Post post;
-    private PostComment comment1;
-    private PostComment comment2;
-    private PostDetails postDetails;
-    private Tag tag1;
-    private Tag tag2;
+    private PostEntity postEntity;
+    private PostCommentsEntity comment1;
+    private PostCommentsEntity comment2;
+    private PostDetailEntity postDetailsEntity;
+    private TagEntity tagEntity1;
+    private TagEntity tagEntity2;
     private Validator validator;
 
     @BeforeEach
     void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        post = Post.builder()
+        postEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .comments(new ArrayList<>())
-                .tags(new LinkedHashSet<>())
+                .tagEntities(new LinkedHashSet<>())
                 .build();
 
-        comment1 = PostComment.builder()
+        comment1 = PostCommentsEntity.builder()
                 .id(1L)
-                .review("First comment")
+                .comment("First comment")
                 .build();
 
-        comment2 = PostComment.builder()
+        comment2 = PostCommentsEntity.builder()
                 .id(2L)
-                .review("Second comment")
+                .comment("Second comment")
                 .build();
 
-        postDetails = PostDetails.builder()
+        postDetailsEntity = PostDetailEntity.builder()
                 .id(1L)
                 .description("Test description")
                 .build();
 
-        tag1 = Tag.builder()
+        tagEntity1 = TagEntity.builder()
                 .id(1L)
                 .name("Spring Boot")
-                .posts(new LinkedHashSet<>())
+                .postEntities(new LinkedHashSet<>())
                 .build();
 
-        tag2 = Tag.builder()
+        tagEntity2 = TagEntity.builder()
                 .id(2L)
                 .name("Java")
-                .posts(new LinkedHashSet<>())
+                .postEntities(new LinkedHashSet<>())
                 .build();
     }
 
@@ -76,276 +76,276 @@ class PostEntityTest {
     @DisplayName("addComment - Should add comment and set bidirectional relationship")
     void testAddComment() {
         // When
-        post.addComment(comment1);
+        postEntity.addComment(comment1);
 
         // Then
-        assertThat(post.getComments()).hasSize(1);
-        assertThat(post.getComments()).contains(comment1);
-        assertThat(comment1.getPost()).isEqualTo(post);
+        assertThat(postEntity.getComments()).hasSize(1);
+        assertThat(postEntity.getComments()).contains(comment1);
+        assertThat(comment1.getPostEntity()).isEqualTo(postEntity);
     }
 
     @Test
     @DisplayName("addComment - Should add multiple comments")
     void testAddComment_Multiple() {
         // When
-        post.addComment(comment1);
-        post.addComment(comment2);
+        postEntity.addComment(comment1);
+        postEntity.addComment(comment2);
 
         // Then
-        assertThat(post.getComments()).hasSize(2);
-        assertThat(post.getComments()).contains(comment1, comment2);
-        assertThat(comment1.getPost()).isEqualTo(post);
-        assertThat(comment2.getPost()).isEqualTo(post);
+        assertThat(postEntity.getComments()).hasSize(2);
+        assertThat(postEntity.getComments()).contains(comment1, comment2);
+        assertThat(comment1.getPostEntity()).isEqualTo(postEntity);
+        assertThat(comment2.getPostEntity()).isEqualTo(postEntity);
     }
 
     @Test
     @DisplayName("removeComment - Should remove comment and clear bidirectional relationship")
     void testRemoveComment() {
         // Given
-        post.addComment(comment1);
-        post.addComment(comment2);
+        postEntity.addComment(comment1);
+        postEntity.addComment(comment2);
 
         // When
-        post.removeComment(comment1);
+        postEntity.removeComment(comment1);
 
         // Then
-        assertThat(post.getComments()).hasSize(1);
-        assertThat(post.getComments()).contains(comment2);
-        assertThat(post.getComments()).doesNotContain(comment1);
-        assertThat(comment1.getPost()).isNull();
-        assertThat(comment2.getPost()).isEqualTo(post);
+        assertThat(postEntity.getComments()).hasSize(1);
+        assertThat(postEntity.getComments()).contains(comment2);
+        assertThat(postEntity.getComments()).doesNotContain(comment1);
+        assertThat(comment1.getPostEntity()).isNull();
+        assertThat(comment2.getPostEntity()).isEqualTo(postEntity);
     }
 
     @Test
     @DisplayName("addTag - Should add tag and synchronize bidirectional relationship")
     void testAddTag() {
         // When
-        post.addTag(tag1);
+        postEntity.addTag(tagEntity1);
 
         // Then
-        assertThat(post.getTags()).hasSize(1);
-        assertThat(post.getTags()).contains(tag1);
-        assertThat(tag1.getPosts()).contains(post);
+        assertThat(postEntity.getTagEntities()).hasSize(1);
+        assertThat(postEntity.getTagEntities()).contains(tagEntity1);
+        assertThat(tagEntity1.getPostEntities()).contains(postEntity);
     }
 
     @Test
-    @DisplayName("addTag - Should add multiple tags")
+    @DisplayName("addTag - Should add multiple tagEntities")
     void testAddTag_Multiple() {
         // When
-        post.addTag(tag1);
-        post.addTag(tag2);
+        postEntity.addTag(tagEntity1);
+        postEntity.addTag(tagEntity2);
 
         // Then
-        assertThat(post.getTags()).hasSize(2);
-        assertThat(post.getTags()).contains(tag1, tag2);
-        assertThat(tag1.getPosts()).contains(post);
-        assertThat(tag2.getPosts()).contains(post);
+        assertThat(postEntity.getTagEntities()).hasSize(2);
+        assertThat(postEntity.getTagEntities()).contains(tagEntity1, tagEntity2);
+        assertThat(tagEntity1.getPostEntities()).contains(postEntity);
+        assertThat(tagEntity2.getPostEntities()).contains(postEntity);
     }
 
     @Test
     @DisplayName("removeTag - Should remove tag and synchronize bidirectional relationship")
     void testRemoveTag() {
         // Given
-        post.addTag(tag1);
-        post.addTag(tag2);
+        postEntity.addTag(tagEntity1);
+        postEntity.addTag(tagEntity2);
 
         // When
-        post.removeTag(tag1);
+        postEntity.removeTag(tagEntity1);
 
         // Then
-        assertThat(post.getTags()).hasSize(1);
-        assertThat(post.getTags()).contains(tag2);
-        assertThat(post.getTags()).doesNotContain(tag1);
-        assertThat(tag1.getPosts()).doesNotContain(post);
-        assertThat(tag2.getPosts()).contains(post);
+        assertThat(postEntity.getTagEntities()).hasSize(1);
+        assertThat(postEntity.getTagEntities()).contains(tagEntity2);
+        assertThat(postEntity.getTagEntities()).doesNotContain(tagEntity1);
+        assertThat(tagEntity1.getPostEntities()).doesNotContain(postEntity);
+        assertThat(tagEntity2.getPostEntities()).contains(postEntity);
     }
 
     @Test
-    @DisplayName("setDetails - Should set PostDetails and synchronize bidirectional relationship")
+    @DisplayName("setDetails - Should set PostDetailEntity and synchronize bidirectional relationship")
     void testSetDetails_Add() {
         // When
-        post.setDetails(postDetails);
+        postEntity.setDetails(postDetailsEntity);
 
         // Then
-        assertThat(post.getPostDetails()).isEqualTo(postDetails);
-        assertThat(postDetails.getPost()).isEqualTo(post);
+        assertThat(postEntity.getPostDetailEntity()).isEqualTo(postDetailsEntity);
+        assertThat(postDetailsEntity.getPostEntity()).isEqualTo(postEntity);
     }
 
     @Test
-    @DisplayName("setDetails - Should replace existing PostDetails")
+    @DisplayName("setDetails - Should replace existing PostDetailEntity")
     void testSetDetails_Replace() {
         // Given
-        PostDetails oldDetails = PostDetails.builder()
+        PostDetailEntity oldDetails = PostDetailEntity.builder()
                 .id(2L)
                 .description("Old description")
                 .build();
 
-        post.setDetails(oldDetails);
+        postEntity.setDetails(oldDetails);
 
         // When
-        post.setDetails(postDetails);
+        postEntity.setDetails(postDetailsEntity);
 
         // Then
-        assertThat(post.getPostDetails()).isEqualTo(postDetails);
-        assertThat(postDetails.getPost()).isEqualTo(post);
-        assertThat(oldDetails.getPost()).isNotNull();
+        assertThat(postEntity.getPostDetailEntity()).isEqualTo(postDetailsEntity);
+        assertThat(postDetailsEntity.getPostEntity()).isEqualTo(postEntity);
+        assertThat(oldDetails.getPostEntity()).isNotNull();
     }
 
     @Test
-    @DisplayName("setDetails - Should remove PostDetails when set to null")
+    @DisplayName("setDetails - Should remove PostDetailEntity when set to null")
     void testSetDetails_Remove() {
         // Given
-        post.setDetails(postDetails);
-        assertThat(post.getPostDetails()).isNotNull();
+        postEntity.setDetails(postDetailsEntity);
+        assertThat(postEntity.getPostDetailEntity()).isNotNull();
 
         // When
-        post.setDetails(null);
+        postEntity.setDetails(null);
 
         // Then
-        assertThat(post.getPostDetails()).isNull();
-        assertThat(postDetails.getPost()).isNull();
+        assertThat(postEntity.getPostDetailEntity()).isNull();
+        assertThat(postDetailsEntity.getPostEntity()).isNull();
     }
 
     @Test
     @DisplayName("equals - Should return true for same instance")
     void testEquals_SameInstance() {
         // When/Then
-        assertThat(post.equals(post)).isTrue();
+        assertThat(postEntity.equals(postEntity)).isTrue();
     }
 
     @Test
-    @DisplayName("equals - Should return true for posts with same id")
+    @DisplayName("equals - Should return true for postEntities with same id")
     void testEquals_SameId() {
         // Given
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(1L)
                 .title("Different Title")
                 .build();
 
         // When/Then
-        assertThat(post.equals(post2)).isTrue();
+        assertThat(postEntity.equals(postEntity2)).isTrue();
     }
 
     @Test
-    @DisplayName("equals - Should return false for posts with different id")
+    @DisplayName("equals - Should return false for postEntities with different id")
     void testEquals_DifferentId() {
         // Given
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(2L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .build();
 
         // When/Then
-        assertThat(post.equals(post2)).isFalse();
+        assertThat(postEntity.equals(postEntity2)).isFalse();
     }
 
     @Test
     @DisplayName("equals - Should return false for null")
     void testEquals_Null() {
         // When/Then
-        assertThat(post.equals(null)).isFalse();
+        assertThat(postEntity.equals(null)).isFalse();
     }
 
     @Test
     @DisplayName("equals - Should return false for different type")
     void testEquals_DifferentType() {
         // When/Then
-        assertThat(post.equals("Not a Post")).isFalse();
+        assertThat(postEntity.equals("Not a PostEntity")).isFalse();
     }
 
     @Test
     @DisplayName("equals - Should return false when id is null")
     void testEquals_NullId() {
         // Given
-        Post postWithoutId = Post.builder()
-                .title("Test Post")
+        PostEntity postEntityWithoutId = PostEntity.builder()
+                .title("Test PostEntity")
                 .build();
 
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .build();
 
         // When/Then
-        assertThat(postWithoutId.equals(post2)).isFalse();
+        assertThat(postEntityWithoutId.equals(postEntity2)).isFalse();
     }
 
     @Test
-    @DisplayName("hashCode - Should return same hashCode for posts with same id")
+    @DisplayName("hashCode - Should return same hashCode for postEntities with same id")
     void testHashCode() {
         // Given
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(1L)
                 .title("Different Title")
                 .build();
 
         // When/Then
-        assertThat(post.hashCode()).isEqualTo(post2.hashCode());
+        assertThat(postEntity.hashCode()).isEqualTo(postEntity2.hashCode());
     }
 
     @Test
     @DisplayName("hashCode - Should return class hashCode when id is null")
     void testHashCode_NullId() {
         // Given
-        Post postWithoutId = Post.builder()
-                .title("Test Post")
+        PostEntity postEntityWithoutId = PostEntity.builder()
+                .title("Test PostEntity")
                 .build();
 
         // When/Then
-        assertThat(postWithoutId.hashCode()).isEqualTo(Post.class.hashCode());
+        assertThat(postEntityWithoutId.hashCode()).isEqualTo(PostEntity.class.hashCode());
     }
 
     @Test
-    @DisplayName("Builder - Should create Post with all fields")
+    @DisplayName("Builder - Should create PostEntity with all fields")
     void testBuilder() {
         // Given
         LocalDateTime now = LocalDateTime.now();
-        Set<Tag> tags = new LinkedHashSet<>(Set.of(tag1, tag2));
-        ArrayList<PostComment> comments = new ArrayList<>(Set.of(comment1, comment2));
+        Set<TagEntity> tagEntities = new LinkedHashSet<>(Set.of(tagEntity1, tagEntity2));
+        ArrayList<PostCommentsEntity> comments = new ArrayList<>(Set.of(comment1, comment2));
 
         // When
-        Post builtPost = Post.builder()
+        PostEntity builtPostEntity = PostEntity.builder()
                 .id(1L)
-                .title("Test Post")
-                .postDetails(postDetails)
+                .title("Test PostEntity")
+                .postDetailEntity(postDetailsEntity)
                 .comments(comments)
-                .tags(tags)
+                .tagEntities(tagEntities)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
 
         // Then
-        assertThat(builtPost.getId()).isEqualTo(1L);
-        assertThat(builtPost.getTitle()).isEqualTo("Test Post");
-        assertThat(builtPost.getPostDetails()).isEqualTo(postDetails);
-        assertThat(builtPost.getComments()).isEqualTo(comments);
-        assertThat(builtPost.getTags()).isEqualTo(tags);
-        assertThat(builtPost.getCreatedAt()).isEqualTo(now);
-        assertThat(builtPost.getUpdatedAt()).isEqualTo(now);
+        assertThat(builtPostEntity.getId()).isEqualTo(1L);
+        assertThat(builtPostEntity.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(builtPostEntity.getPostDetailEntity()).isEqualTo(postDetailsEntity);
+        assertThat(builtPostEntity.getComments()).isEqualTo(comments);
+        assertThat(builtPostEntity.getTagEntities()).isEqualTo(tagEntities);
+        assertThat(builtPostEntity.getCreatedAt()).isEqualTo(now);
+        assertThat(builtPostEntity.getUpdatedAt()).isEqualTo(now);
     }
 
     @Test
-    @DisplayName("NoArgsConstructor - Should create empty Post")
+    @DisplayName("NoArgsConstructor - Should create empty PostEntity")
     void testNoArgsConstructor() {
         // When
-        Post emptyPost = new Post();
+        PostEntity emptyPostEntity = new PostEntity();
 
         // Then
-        assertThat(emptyPost).isNotNull();
-        assertThat(emptyPost.getId()).isNull();
-        assertThat(emptyPost.getTitle()).isNull();
+        assertThat(emptyPostEntity).isNotNull();
+        assertThat(emptyPostEntity.getId()).isNull();
+        assertThat(emptyPostEntity.getTitle()).isNull();
     }
 
     @Test
     @DisplayName("Validation - Should pass when title is valid")
     void testValidation_ValidTitle() {
         // Given
-        Post validPost = Post.builder()
-                .title("Valid Post Title")
+        PostEntity validPostEntity = PostEntity.builder()
+                .title("Valid PostEntity Title")
                 .build();
 
         // When
-        Set<ConstraintViolation<Post>> violations = validator.validate(validPost);
+        Set<ConstraintViolation<PostEntity>> violations = validator.validate(validPostEntity);
 
         // Then
         assertThat(violations).isEmpty();
@@ -355,12 +355,12 @@ class PostEntityTest {
     @DisplayName("Validation - Should fail when title is null")
     void testValidation_NullTitle() {
         // Given
-        Post postWithNullTitle = Post.builder()
+        PostEntity postEntityWithNullTitle = PostEntity.builder()
                 .title(null)
                 .build();
 
         // When
-        Set<ConstraintViolation<Post>> violations = validator.validate(postWithNullTitle);
+        Set<ConstraintViolation<PostEntity>> violations = validator.validate(postEntityWithNullTitle);
 
         // Then
         assertThat(violations).hasSize(1);
@@ -372,12 +372,12 @@ class PostEntityTest {
     @DisplayName("Validation - Should fail when title is blank")
     void testValidation_BlankTitle() {
         // Given
-        Post postWithBlankTitle = Post.builder()
+        PostEntity postEntityWithBlankTitle = PostEntity.builder()
                 .title("")
                 .build();
 
         // When
-        Set<ConstraintViolation<Post>> violations = validator.validate(postWithBlankTitle);
+        Set<ConstraintViolation<PostEntity>> violations = validator.validate(postEntityWithBlankTitle);
 
         // Then
         // Empty string violates both @NotBlank and @Size(min = 1) constraints
@@ -391,12 +391,12 @@ class PostEntityTest {
     void testValidation_TitleExceedsMaxLength() {
         // Given
         String longTitle = "A".repeat(256);
-        Post postWithLongTitle = Post.builder()
+        PostEntity postEntityWithLongTitle = PostEntity.builder()
                 .title(longTitle)
                 .build();
 
         // When
-        Set<ConstraintViolation<Post>> violations = validator.validate(postWithLongTitle);
+        Set<ConstraintViolation<PostEntity>> violations = validator.validate(postEntityWithLongTitle);
 
         // Then
         assertThat(violations).hasSize(1);
@@ -408,12 +408,12 @@ class PostEntityTest {
     void testValidation_TitleAtMaxLength() {
         // Given
         String maxLengthTitle = "A".repeat(255);
-        Post postWithMaxLengthTitle = Post.builder()
+        PostEntity postEntityWithMaxLengthTitle = PostEntity.builder()
                 .title(maxLengthTitle)
                 .build();
 
         // When
-        Set<ConstraintViolation<Post>> violations = validator.validate(postWithMaxLengthTitle);
+        Set<ConstraintViolation<PostEntity>> violations = validator.validate(postEntityWithMaxLengthTitle);
 
         // Then
         assertThat(violations).isEmpty();

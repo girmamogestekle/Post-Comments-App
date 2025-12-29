@@ -5,15 +5,15 @@
 [![Spring AI](https://img.shields.io/badge/Spring%20AI-Enabled-brightgreen)](https://spring.io/projects/spring-ai)
 [![Swagger UI](https://img.shields.io/badge/Docs-Swagger_UI-blue)](https://girmamogestekle.github.io/Post-Comments-App/)
 [![GitHub Action](https://img.shields.io/github/actions/workflow/status/girmamogestekle/Post-Comments-App/workflow.yml?branch=main&label=Build)](https://github.com/girmamogestekle/Post-Comments-App/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=post-comments-app)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=post-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=post-comments-app)
-[![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/post-comments-app)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=alert_status)](https://sonarcloud.io/project/overview?id=postEntity-comments-app)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=postEntity-comments-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=postEntity-comments-app)
+[![Docker](https://img.shields.io/badge/Docker-Ready-informational)](https://hub.docker.com/r/gmtekle/postEntity-comments-app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/girmamogestekle/Post-Comments-App/blob/master/LICENSE)
 
 ---
 
 ## 📝 Overview
-A real-world simulation of a social engagement backend system where users share posts and interact through comments. This project is built using enterprise-ready backend architecture, applying cloud-native, scalable, and maintainable development principles.
+A real-world simulation of a social engagement backend system where users share postEntities and interact through comments. This project is built using enterprise-ready backend architecture, applying cloud-native, scalable, and maintainable development principles.
 
 > Tech Stack: Java 17 ▪ Spring Boot ▪ REST API ▪ SonarQube ▪ MySQL ▪ Docker ▪ Swagger ▪ GitHub Actions ▪ Cursor AI
 
@@ -23,7 +23,7 @@ A real-world simulation of a social engagement backend system where users share 
 
 | Category | Capability |
 |---------|------------|
-| Posts | Create, update, delete, list posts |
+| Posts | Create, update, delete, list postEntities |
 | Comments | Full comment lifecycle |
 | API Style | Clean, versioned RESTful endpoints |
 | Documentation | Live Swagger UI |
@@ -70,8 +70,8 @@ Post-Comments-App/
 ### 🗄️ Database Schema
 
 ```
-Post: id, title, content, author_id, timestamps
-Comment: id, post_id(FK), content, author_id, timestamps
+Post: id, title, details, comments, tagEntities, createdAt, updatedAt
+Details: id, post, description, createdAt, updatedAt
 ```
 ---
 
@@ -119,7 +119,7 @@ This backend integrates Spring AI and OpenAI to provide intelligent features:
 
 | Feature             | Description                          | Endpoint                           |
 |---------------------|--------------------------------------|------------------------------------|
-| Post AI Explanation | Returns simplified summary using LLM | GET /api/posts/{id}?includeAi=true |
+| Post AI Explanation | Returns simplified summary using LLM | GET /api/postEntities/{id}?includeAi=true |
 
 > Powered by Spring AI + OpenAI  
 > Easily extendable to enrich Comments, Tags, and Post Details

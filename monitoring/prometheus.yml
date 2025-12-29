@@ -7,7 +7,7 @@ scrape_configs:
       - targets: ['prometheus:9090']
 
   # Spring Boot metrics when actuator & /actuator/prometheus enabled
-  - job_name: 'post-comments-app'
+  - job_name: 'postEntity-comments-app'
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['host.docker.internal:8081']

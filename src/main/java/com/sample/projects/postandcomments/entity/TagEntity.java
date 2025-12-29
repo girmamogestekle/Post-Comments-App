@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;
 
 import java.util.HashSet;
@@ -15,34 +16,30 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString(exclude = "posts")
-@Builder
+@ToString(exclude = "postEntities")
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Tag")
 @Table(name = "tag")
-public class Tag {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TagEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     @NaturalId
     private String name;
 
     @ManyToMany(
-            mappedBy = "tags",
+            mappedBy = "tagEntities",
             fetch = FetchType.LAZY
     )
     @Builder.Default
-    private Set<Post> posts = new HashSet<>();
+    private Set<PostEntity> postEntities = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Tag tag)) return false;
-        return Objects.equals(name, tag.name);
+        if (!(o instanceof TagEntity tagEntity)) return false;
+        return Objects.equals(name, tagEntity.name);
     }
 
     @Override

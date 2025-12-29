@@ -1,6 +1,6 @@
 package com.sample.projects.postandcomments.service.impl;
 
-import com.sample.projects.postandcomments.entity.PostComment;
+import com.sample.projects.postandcomments.entity.PostCommentsEntity;
 import com.sample.projects.postandcomments.repository.PostCommentRepository;
 import com.sample.projects.postandcomments.service.PostCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     @Override
-    public PostComment save(PostComment comment) {
+    public PostCommentsEntity save(PostCommentsEntity comment) {
         if (comment.getCreatedAt() == null) {
             comment.setCreatedAt(LocalDateTime.now());
         }
@@ -33,39 +33,39 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<PostComment> findById(Long id) {
+    public Optional<PostCommentsEntity> findById(Long id) {
         return postCommentRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostComment> findAll() {
+    public List<PostCommentsEntity> findAll() {
         return postCommentRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostComment> findByPostId(Long postId) {
+    public List<PostCommentsEntity> findByPostId(Long postId) {
         return postCommentRepository.findAll().stream()
-                .filter(comment -> comment.getPost() != null && comment.getPost().getId().equals(postId))
+                .filter(comment -> comment.getPostEntity() != null && comment.getPostEntity().getId().equals(postId))
                 .toList();
     }
 
     @Override
-    public PostComment update(Long id, PostComment comment) {
+    public PostCommentsEntity update(Long id, PostCommentsEntity comment) {
         return postCommentRepository.findById(id)
                 .map(existingComment -> {
-                    existingComment.setReview(comment.getReview());
+                    existingComment.setComment(comment.getComment());
                     existingComment.setUpdatedAt(LocalDateTime.now());
                     return postCommentRepository.save(existingComment);
                 })
-                .orElseThrow(() -> new RuntimeException("PostComment not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("PostCommentsEntity not found with id: " + id));
     }
 
     @Override
     public void deleteById(Long id) {
         if (!postCommentRepository.existsById(id)) {
-            throw new RuntimeException("PostComment not found with id: " + id);
+            throw new RuntimeException("PostCommentsEntity not found with id: " + id);
         }
         postCommentRepository.deleteById(id);
     }

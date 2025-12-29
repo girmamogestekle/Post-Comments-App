@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("PostRequest DTO/Validation Tests")
-class PostRequestTest {
+class PostEntityRequestTest {
 
     private Validator validator;
 
@@ -30,7 +30,7 @@ class PostRequestTest {
     void testValidPostRequest() {
         // Given
         PostRequest request = PostRequest.builder()
-                .title("Valid Post Title")
+                .title("Valid PostEntity Title")
                 .tagIds(Set.of(1L, 2L))
                 .build();
 
@@ -42,11 +42,11 @@ class PostRequestTest {
     }
 
     @Test
-    @DisplayName("Valid PostRequest without tags - Should pass validation")
+    @DisplayName("Valid PostRequest without tagEntities - Should pass validation")
     void testValidPostRequest_WithoutTags() {
         // Given
         PostRequest request = PostRequest.builder()
-                .title("Valid Post Title")
+                .title("Valid PostEntity Title")
                 .build();
 
         // When
@@ -115,12 +115,12 @@ class PostRequestTest {
 
         // When
         PostRequest request = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(tagIds)
                 .build();
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test Post");
+        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
         assertThat(request.getTagIds()).isEqualTo(tagIds);
         assertThat(request.getTagIds()).hasSize(3);
     }
@@ -130,12 +130,12 @@ class PostRequestTest {
     void testBuilder_EmptyTagIds() {
         // When
         PostRequest request = PostRequest.builder()
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tagIds(Set.of())
                 .build();
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test Post");
+        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
         assertThat(request.getTagIds()).isEmpty();
     }
 
@@ -158,10 +158,10 @@ class PostRequestTest {
         Set<Long> tagIds = Set.of(1L, 2L);
 
         // When
-        PostRequest request = new PostRequest("Test Post", tagIds);
+        PostRequest request = new PostRequest("Test PostEntity", tagIds);
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test Post");
+        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
         assertThat(request.getTagIds()).isEqualTo(tagIds);
     }
 
@@ -173,11 +173,11 @@ class PostRequestTest {
         Set<Long> tagIds = Set.of(1L, 2L);
 
         // When
-        request.setTitle("Test Post");
+        request.setTitle("Test PostEntity");
         request.setTagIds(tagIds);
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test Post");
+        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
         assertThat(request.getTagIds()).isEqualTo(tagIds);
     }
 
@@ -219,7 +219,7 @@ class PostRequestTest {
     void testValidPostRequest_SpecialCharacters() {
         // Given
         PostRequest request = PostRequest.builder()
-                .title("Post with Special Characters: !@#$%^&*()")
+                .title("PostEntity with Special Characters: !@#$%^&*()")
                 .build();
 
         // When

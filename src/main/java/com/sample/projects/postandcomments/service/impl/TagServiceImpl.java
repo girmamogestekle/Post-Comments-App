@@ -1,6 +1,6 @@
 package com.sample.projects.postandcomments.service.impl;
 
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.TagEntity;
 import com.sample.projects.postandcomments.repository.TagRepository;
 import com.sample.projects.postandcomments.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +22,28 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag save(Tag tag) {
-        // Check if tag with same name already exists
-        Optional<Tag> existingTag = tagRepository.findAll().stream()
-                .filter(t -> t.getName().equalsIgnoreCase(tag.getName()))
+    public TagEntity save(TagEntity tagEntity) {
+        // Check if tagEntity with same name already exists
+        Optional<TagEntity> existingTag = tagRepository.findAll().stream()
+                .filter(t -> t.getName().equalsIgnoreCase(tagEntity.getName()))
                 .findFirst();
         
         if (existingTag.isPresent()) {
             return existingTag.get();
         }
         
-        return tagRepository.save(tag);
+        return tagRepository.save(tagEntity);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Tag> findById(Long id) {
+    public Optional<TagEntity> findById(Long id) {
         return tagRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Tag> findByName(String name) {
+    public Optional<TagEntity> findByName(String name) {
         return tagRepository.findAll().stream()
                 .filter(tag -> tag.getName().equalsIgnoreCase(name))
                 .findFirst();
@@ -51,24 +51,24 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Tag> findAll() {
+    public List<TagEntity> findAll() {
         return tagRepository.findAll();
     }
 
     @Override
-    public Tag update(Long id, Tag tag) {
+    public TagEntity update(Long id, TagEntity tagEntity) {
         return tagRepository.findById(id)
                 .map(existingTag -> {
-                    existingTag.setName(tag.getName());
+                    existingTag.setName(tagEntity.getName());
                     return tagRepository.save(existingTag);
                 })
-                .orElseThrow(() -> new RuntimeException("Tag not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("TagEntity not found with id: " + id));
     }
 
     @Override
     public void deleteById(Long id) {
         if (!tagRepository.existsById(id)) {
-            throw new RuntimeException("Tag not found with id: " + id);
+            throw new RuntimeException("TagEntity not found with id: " + id);
         }
         tagRepository.deleteById(id);
     }

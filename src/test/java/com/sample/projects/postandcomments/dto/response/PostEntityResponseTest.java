@@ -1,5 +1,6 @@
 package com.sample.projects.postandcomments.dto.response;
 
+import com.sample.projects.postandcomments.entity.PostDetailEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("PostResponse DTO Tests")
-class PostResponseTest {
+class PostEntityResponseTest {
 
     private PostResponse postResponse;
-    private PostDetailsResponse postDetailsResponse;
+    private PostDetailEntity postDetailEntity;
+    private PostDetailResponse postDetailResponse;
     private PostCommentResponse commentResponse1;
     private PostCommentResponse commentResponse2;
     private TagResponse tagResponse1;
@@ -26,9 +28,9 @@ class PostResponseTest {
 
     @BeforeEach
     void setUp() {
-        postDetailsResponse = PostDetailsResponse.builder()
+        postDetailResponse = PostDetailResponse.builder()
                 .id(1L)
-                .postId(1L)
+//                .postId(1L)
                 .description("Test description")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -36,7 +38,7 @@ class PostResponseTest {
 
         commentResponse1 = PostCommentResponse.builder()
                 .id(1L)
-                .review("Great post!")
+                .review("Great postEntity!")
                 .postId(1L)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -72,8 +74,8 @@ class PostResponseTest {
         // When
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
-                .postDetails(postDetailsResponse)
+                .title("Test PostEntity")
+                .postDetailResponse(postDetailResponse)
                 .comments(comments)
                 .tags(tags)
                 .createdAt(now)
@@ -82,8 +84,8 @@ class PostResponseTest {
 
         // Then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
-        assertThat(response.getPostDetails()).isEqualTo(postDetailsResponse);
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isEqualTo(postDetailResponse);
         assertThat(response.getComments()).isEqualTo(comments);
         assertThat(response.getTags()).isEqualTo(tags);
         assertThat(response.getCreatedAt()).isEqualTo(now);
@@ -96,13 +98,13 @@ class PostResponseTest {
         // When
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .build();
 
         // Then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
-        assertThat(response.getPostDetails()).isNull();
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isNull();
         assertThat(response.getComments()).isNull();
         assertThat(response.getTags()).isNull();
         assertThat(response.getCreatedAt()).isNull();
@@ -119,7 +121,7 @@ class PostResponseTest {
         assertThat(response).isNotNull();
         assertThat(response.getId()).isNull();
         assertThat(response.getTitle()).isNull();
-        assertThat(response.getPostDetails()).isNull();
+        assertThat(response.getPostDetailResponse()).isNull();
         assertThat(response.getComments()).isNull();
         assertThat(response.getTags()).isNull();
     }
@@ -135,8 +137,8 @@ class PostResponseTest {
         // When
         PostResponse response = new PostResponse(
                 1L,
-                "Test Post",
-                postDetailsResponse,
+                "Test PostEntity",
+                postDetailResponse,
                 comments,
                 tags,
                 now,
@@ -145,8 +147,8 @@ class PostResponseTest {
 
         // Then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
-        assertThat(response.getPostDetails()).isEqualTo(postDetailsResponse);
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isEqualTo(postDetailResponse);
         assertThat(response.getComments()).isEqualTo(comments);
         assertThat(response.getTags()).isEqualTo(tags);
         assertThat(response.getCreatedAt()).isEqualTo(now);
@@ -164,8 +166,8 @@ class PostResponseTest {
 
         // When
         response.setId(1L);
-        response.setTitle("Test Post");
-        response.setPostDetails(postDetailsResponse);
+        response.setTitle("Test PostEntity");
+        response.setPostDetailResponse(postDetailResponse);
         response.setComments(comments);
         response.setTags(tags);
         response.setCreatedAt(now);
@@ -173,8 +175,8 @@ class PostResponseTest {
 
         // Then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Test Post");
-        assertThat(response.getPostDetails()).isEqualTo(postDetailsResponse);
+        assertThat(response.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isEqualTo(postDetailResponse);
         assertThat(response.getComments()).isEqualTo(comments);
         assertThat(response.getTags()).isEqualTo(tags);
         assertThat(response.getCreatedAt()).isEqualTo(now);
@@ -182,19 +184,19 @@ class PostResponseTest {
     }
 
     @Test
-    @DisplayName("PostResponse with PostDetails - Should set and get correctly")
+    @DisplayName("PostResponse with PostDetailEntity - Should set and get correctly")
     void testPostDetails() {
         // Given
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
-                .postDetails(postDetailsResponse)
+                .title("Test PostEntity")
+                .postDetailResponse(postDetailResponse)
                 .build();
 
         // Then
-        assertThat(response.getPostDetails()).isNotNull();
-        assertThat(response.getPostDetails().getId()).isEqualTo(1L);
-        assertThat(response.getPostDetails().getDescription()).isEqualTo("Test description");
+        assertThat(response.getPostDetailResponse()).isNotNull();
+        assertThat(response.getPostDetailResponse().getId()).isEqualTo(1L);
+        assertThat(response.getPostDetailResponse().getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -204,7 +206,7 @@ class PostResponseTest {
         List<PostCommentResponse> comments = List.of(commentResponse1, commentResponse2);
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .comments(comments)
                 .build();
 
@@ -220,7 +222,7 @@ class PostResponseTest {
         Set<TagResponse> tags = new LinkedHashSet<>(Set.of(tagResponse1, tagResponse2));
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .tags(tags)
                 .build();
 
@@ -235,7 +237,7 @@ class PostResponseTest {
         // Given
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .comments(new ArrayList<>())
                 .tags(new LinkedHashSet<>())
                 .build();
@@ -254,7 +256,7 @@ class PostResponseTest {
 
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
+                .title("Test PostEntity")
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .build();
@@ -270,8 +272,8 @@ class PostResponseTest {
         // When
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Test Post")
-                .postDetails(null)
+                .title("Test PostEntity")
+                .postDetailResponse(null)
                 .comments(null)
                 .tags(null)
                 .createdAt(null)
@@ -279,7 +281,7 @@ class PostResponseTest {
                 .build();
 
         // Then
-        assertThat(response.getPostDetails()).isNull();
+        assertThat(response.getPostDetailResponse()).isNull();
         assertThat(response.getComments()).isNull();
         assertThat(response.getTags()).isNull();
         assertThat(response.getCreatedAt()).isNull();
@@ -297,8 +299,8 @@ class PostResponseTest {
         // When
         PostResponse response = PostResponse.builder()
                 .id(1L)
-                .title("Complete Test Post")
-                .postDetails(postDetailsResponse)
+                .title("Complete Test PostEntity")
+                .postDetailResponse(postDetailResponse)
                 .comments(comments)
                 .tags(tags)
                 .createdAt(now)
@@ -307,8 +309,8 @@ class PostResponseTest {
 
         // Then
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getTitle()).isEqualTo("Complete Test Post");
-        assertThat(response.getPostDetails()).isNotNull();
+        assertThat(response.getTitle()).isEqualTo("Complete Test PostEntity");
+        assertThat(response.getPostDetailResponse()).isNotNull();
         assertThat(response.getComments()).hasSize(2);
         assertThat(response.getTags()).hasSize(2);
         assertThat(response.getCreatedAt()).isNotNull();

@@ -1,21 +1,21 @@
 package com.sample.projects.postandcomments.service;
 
-import com.sample.projects.postandcomments.entity.PostComment;
+import com.sample.projects.postandcomments.entity.PostCommentsEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PostCommentService {
     
-    PostComment save(PostComment comment);
+    PostCommentsEntity save(PostCommentsEntity comment);
     
-    Optional<PostComment> findById(Long id);
+    Optional<PostCommentsEntity> findById(Long id);
     
-    List<PostComment> findAll();
+    List<PostCommentsEntity> findAll();
     
-    List<PostComment> findByPostId(Long postId);
+    List<PostCommentsEntity> findByPostId(Long postId);
     
-    PostComment update(Long id, PostComment comment);
+    PostCommentsEntity update(Long id, PostCommentsEntity comment);
     
     void deleteById(Long id);
     

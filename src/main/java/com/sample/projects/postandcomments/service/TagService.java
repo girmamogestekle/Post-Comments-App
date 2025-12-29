@@ -1,21 +1,21 @@
 package com.sample.projects.postandcomments.service;
 
-import com.sample.projects.postandcomments.entity.Tag;
+import com.sample.projects.postandcomments.entity.TagEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TagService {
     
-    Tag save(Tag tag);
+    TagEntity save(TagEntity tagEntity);
     
-    Optional<Tag> findById(Long id);
+    Optional<TagEntity> findById(Long id);
     
-    Optional<Tag> findByName(String name);
+    Optional<TagEntity> findByName(String name);
     
-    List<Tag> findAll();
+    List<TagEntity> findAll();
     
-    Tag update(Long id, Tag tag);
+    TagEntity update(Long id, TagEntity tagEntity);
     
     void deleteById(Long id);
     

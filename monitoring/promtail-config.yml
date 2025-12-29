@@ -9,12 +9,12 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: post-comments-app
+  - job_name: postEntity-comments-app
     static_configs:
       - targets:
           - localhost
         labels:
-          job: post-comments-app-logs
-          app: post-comments-app
+          job: postEntity-comments-app-logs
+          app: postEntity-comments-app
           # must match the volume mount above
           __path__: /var/log/apps/*.log

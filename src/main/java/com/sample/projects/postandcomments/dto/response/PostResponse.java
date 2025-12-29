@@ -19,7 +19,7 @@ public class PostResponse {
     
     private String title;
     
-    private PostDetailsResponse postDetails;
+    private PostDetailResponse postDetailResponse;
     
     private List<PostCommentResponse> comments;
     

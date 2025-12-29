@@ -72,7 +72,7 @@ class PostEntityControllerTest {
     void testCreatePost_Success() throws Exception {
         when(postService.save(any(PostRequest.class))).thenReturn(postResponse);
 
-        mockMvc.perform(post("/api/v1/posts")
+        mockMvc.perform(post("/api/v1/post/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postRequest)))
                 .andExpect(status().isCreated())
@@ -91,7 +91,7 @@ class PostEntityControllerTest {
     void testCreatePost_WithAiResponse() throws Exception {
         when(postService.save(any(PostRequest.class))).thenReturn(postResponse);
 
-        mockMvc.perform(post("/api/v1/posts")
+        mockMvc.perform(post("/api/v1/post/create")
                         .param("includeAi", "true")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postRequest)))
@@ -109,7 +109,7 @@ class PostEntityControllerTest {
                 .title("") // Empty title should fail validation
                 .build();
 
-        mockMvc.perform(post("/api/v1/posts")
+        mockMvc.perform(post("/api/v1/post/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -122,7 +122,7 @@ class PostEntityControllerTest {
     void testGetPostById_Success() throws Exception {
         when(postService.findById(1L)).thenReturn(Optional.of(postResponse));
 
-        mockMvc.perform(get("/api/v1/posts/1"))
+        mockMvc.perform(get("/api/v1/post/get/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
@@ -138,7 +138,7 @@ class PostEntityControllerTest {
     void testGetPostById_NotFound() throws Exception {
         when(postService.findById(999L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/v1/posts/999"))
+        mockMvc.perform(get("/api/v1/post/get/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.success").value(false))
@@ -163,7 +163,7 @@ class PostEntityControllerTest {
 
         when(postService.findAll()).thenReturn(posts);
 
-        mockMvc.perform(get("/api/v1/posts"))
+        mockMvc.perform(get("/api/v1/post/get/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.success").value(true))
@@ -192,7 +192,7 @@ class PostEntityControllerTest {
 
         when(postService.update(eq(1L), any(PostRequest.class))).thenReturn(updatedResponse);
 
-        mockMvc.perform(put("/api/v1/posts/1")
+        mockMvc.perform(put("/api/v1/post/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
@@ -214,7 +214,7 @@ class PostEntityControllerTest {
         when(postService.update(eq(999L), any(PostRequest.class)))
                 .thenThrow(new com.sample.projects.postandcomments.exception.ResourceNotFoundException("PostEntity", 999L));
 
-        mockMvc.perform(put("/api/v1/posts/999")
+        mockMvc.perform(put("/api/v1/post/update/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isNotFound())
@@ -230,7 +230,7 @@ class PostEntityControllerTest {
     void testDeletePost_Success() throws Exception {
         doNothing().when(postService).deleteById(1L);
 
-        mockMvc.perform(delete("/api/v1/posts/1"))
+        mockMvc.perform(delete("/api/v1/post/delete/1"))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.status").value(204))
                 .andExpect(jsonPath("$.success").value(true))
@@ -245,7 +245,7 @@ class PostEntityControllerTest {
         doThrow(new com.sample.projects.postandcomments.exception.ResourceNotFoundException("PostEntity", 999L))
                 .when(postService).deleteById(999L);
 
-        mockMvc.perform(delete("/api/v1/posts/999"))
+        mockMvc.perform(delete("/api/v1/post/delete/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.success").value(false))

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("PostResponse DTO Tests")
-class PostEntityResponseTest {
+class PostResponseTest {
 
     private PostResponse postResponse;
     private PostDetailEntity postDetailEntity;

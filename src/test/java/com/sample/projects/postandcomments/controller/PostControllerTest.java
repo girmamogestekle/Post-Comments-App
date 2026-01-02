@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @WebMvcTest(controllers = PostController.class)
 @DisplayName("PostController API Integration Tests")
-class PostEntityControllerTest {
+class PostControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +53,7 @@ class PostEntityControllerTest {
 
     @BeforeEach
     void setUp() {
-        log.debug("Setting up test data for PostEntityControllerTest");
+        log.debug("Setting up test data for PostControllerTest");
         postRequest = PostRequest.builder()
                 .title("Test PostEntity Title")
                 .build();

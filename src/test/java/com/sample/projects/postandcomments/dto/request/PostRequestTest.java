@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("PostRequest DTO/Validation Tests")
-class PostEntityRequestTest {
+class PostRequestTest {
 
     private Validator validator;
 
@@ -30,7 +30,7 @@ class PostEntityRequestTest {
     void testValidPostRequest() {
         // Given
         PostRequest request = PostRequest.builder()
-                .title("Valid PostEntity Title")
+                .title("Valid Post Title")
                 .tagIds(Set.of(1L, 2L))
                 .build();
 
@@ -115,12 +115,12 @@ class PostEntityRequestTest {
 
         // When
         PostRequest request = PostRequest.builder()
-                .title("Test PostEntity")
+                .title("Test Post")
                 .tagIds(tagIds)
                 .build();
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(request.getTitle()).isEqualTo("Test Post");
         assertThat(request.getTagIds()).isEqualTo(tagIds);
         assertThat(request.getTagIds()).hasSize(3);
     }
@@ -173,11 +173,11 @@ class PostEntityRequestTest {
         Set<Long> tagIds = Set.of(1L, 2L);
 
         // When
-        request.setTitle("Test PostEntity");
+        request.setTitle("Test Post");
         request.setTagIds(tagIds);
 
         // Then
-        assertThat(request.getTitle()).isEqualTo("Test PostEntity");
+        assertThat(request.getTitle()).isEqualTo("Test Post");
         assertThat(request.getTagIds()).isEqualTo(tagIds);
     }
 

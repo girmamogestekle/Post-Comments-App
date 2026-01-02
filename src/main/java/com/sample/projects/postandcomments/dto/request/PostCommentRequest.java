@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostCommentRequest {
     
-    @NotBlank(message = "Review is required")
-    private String review;
+    @NotBlank(message = "Review Is Required")
+    private String comment;
     
     @NotNull(message = "PostEntity ID is required")
     private Long postId;

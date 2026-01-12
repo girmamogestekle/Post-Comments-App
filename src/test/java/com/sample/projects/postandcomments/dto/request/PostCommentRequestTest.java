@@ -26,7 +26,7 @@ public class PostCommentRequestTest {
     }
 
     @Test
-    @DisplayName("Valid PostComment - Should Pass Validation")
+    @DisplayName("Valid Post Comment - Should Pass Validation")
     void testValidPostCommentRequest(){
         // Given
         PostCommentRequest postCommentRequest = PostCommentRequest.builder()

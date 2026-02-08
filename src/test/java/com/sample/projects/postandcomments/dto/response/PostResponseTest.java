@@ -1,6 +1,5 @@
 package com.sample.projects.postandcomments.dto.response;
 
-import com.sample.projects.postandcomments.entity.PostDetailEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("PostResponse DTO Tests")
 class PostResponseTest {
 
-    private PostResponse postResponse;
-    private PostDetailEntity postDetailEntity;
     private PostDetailResponse postDetailResponse;
     private PostCommentResponse commentResponse1;
     private PostCommentResponse commentResponse2;
@@ -38,7 +35,7 @@ class PostResponseTest {
 
         commentResponse1 = PostCommentResponse.builder()
                 .id(1L)
-                .review("Great postEntity!")
+                .comment("Great postEntity!")
                 .postId(1L)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -46,7 +43,7 @@ class PostResponseTest {
 
         commentResponse2 = PostCommentResponse.builder()
                 .id(2L)
-                .review("Very informative")
+                .comment("Very informative")
                 .postId(1L)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())

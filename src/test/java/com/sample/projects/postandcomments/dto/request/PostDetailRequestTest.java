@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@DisplayName("Post Detail Request DTO Test")
+@DisplayName("Post Detail Request DTO Tests")
 public class PostDetailRequestTest {
 
     private Validator validator;

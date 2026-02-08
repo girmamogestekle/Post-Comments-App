@@ -15,7 +15,7 @@ public class PostCommentResponse {
     
     private Long id;
     
-    private String review;
+    private String comment;
     
     private Long postId;
     

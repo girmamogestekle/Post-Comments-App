@@ -20,7 +20,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, updatable = false, nullable = false)
     @Setter(AccessLevel.NONE)
     private Long id;
 

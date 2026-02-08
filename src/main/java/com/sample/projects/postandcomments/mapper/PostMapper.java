@@ -67,7 +67,7 @@ public class PostMapper {
 
         return PostCommentResponse.builder()
                 .id(comment.getId())
-                .review(comment.getComment())
+                .comment(comment.getComment())
                 .postId(comment.getPostEntity() != null ? comment.getPostEntity().getId() : null)
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())

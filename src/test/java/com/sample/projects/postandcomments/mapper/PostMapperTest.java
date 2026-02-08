@@ -154,7 +154,7 @@ class PostMapperTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getComments()).hasSize(2);
-        assertThat(response.getComments()).extracting(PostCommentResponse::getReview)
+        assertThat(response.getComments()).extracting(PostCommentResponse::getComment)
                 .containsExactlyInAnyOrder("Great postEntity!", "Very informative");
         assertThat(response.getComments()).extracting(PostCommentResponse::getPostId)
                 .containsOnly(1L);
@@ -319,7 +319,7 @@ class PostMapperTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getReview()).isEqualTo("Great postEntity!");
+        assertThat(response.getComment()).isEqualTo("Great postEntity!");
         assertThat(response.getPostId()).isEqualTo(1L);
     }
 

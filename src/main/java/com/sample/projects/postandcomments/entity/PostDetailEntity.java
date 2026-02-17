@@ -1,6 +1,8 @@
 package com.sample.projects.postandcomments.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,9 @@ public class PostDetailEntity extends BaseEntity {
     @JoinColumn(name = "id")
     private PostEntity postEntity;
 
-    @Column(length = 5000)
+    @NotBlank(message = "Description is required")
+    @Size(min=1, max=5000, message="Description must be between 1 and 5000 characters")
+    @Column(nullable = false, length = 5000)
     private String description;
 
     @Override
